@@ -1,6 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title><![CDATA[kubernetes环境搭建之minikube方式]]></title>
+    <url>%2F2018%2F01%2F10%2Fkubernetes%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA%E4%B9%8Bminikube%2F</url>
+    <content type="text"><![CDATA[minikube安装官网安装教程 官网已经有详细的教程，下面简要介绍一下安装步骤以及注意事项 安装步骤：1. 安装虚拟化产品 (kvm、virtualbox、vmware等等)2. 下载安装 kubectl3. 下载安装minikube注意事项1. 因为是google的玩意，所以只能翻出去。请自行搞个代理2. 第一次运行的时候一定要注意，需要根据自身虚拟化功能来设置比如： `minikube start --vm-driver=kvm2` 因为第一次运行的时候是要从官网下载对应的镜像。如果需要重新指定driver，最好把之前的iso删掉(我是把整个~/.minikube 都删掉了) 3. 第一次运行 minikube start --vm-driver=kvm2报错如下Error starting host: Error creating host: Error creating machine: Error in driver during machine creation: Error creating VM: virError(Code=55, Domain=19, Message=&apos;所需操作无效：network &apos;default&apos; is not active&apos;) 解决办法：需要去修改 libvirt的default网络详细步骤： 1、 virsh net-edit default 2、 修改ip address（我本地是因为ip和其他网卡冲突了） 3、 virsh net-start default (确保本地没有default 文件中的 bridge name)]]></content>
+  </entry>
+  <entry>
+    <title></title>
+    <url>%2F2018%2F01%2F04%2Fkubernetes%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA(MAC)%2F</url>
+    <content type="text"><![CDATA[官方文档: https://kubernetes.io/docs/tasks/tools/install-minikube/ 1. Install kubectl下载kubectl1curl -LO https://storage.googleapis.com/kubernetes-release/release/`curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt`/bin/darwin/amd64/kubectl 添加权限1chmod +x ./kubectl 2. 安装 minikube1curl -Lo minikube https://storage.googleapis.com/minikube/releases/v0.24.1/minikube-darwin-amd64 &amp;&amp; chmod +x minikube &amp;&amp; sudo mv minikube /usr/local/bin/ 3. 下载minikube iso1wget https://storage.googleapis.com/minikube/iso/minikube-v0.23.6.iso]]></content>
+  </entry>
+  <entry>
+    <title><![CDATA[Onos cord 相关概念]]></title>
+    <url>%2F2018%2F01%2F03%2FONOS-cord-%E7%9B%B8%E5%85%B3%E6%A6%82%E5%BF%B5%2F</url>
+    <content type="text"><![CDATA[学习onos cord的知识储备 Part1.1. OLT Optional Line Terminal 光线路终端 2. ONF Optional Network Terminal 光网络终端 3. ONU Optional Network Unit 光网络单元 关系:局端设备（OLT）与多个用户端设备（ONU/ONT）之间通过无源的光缆、光分/合路器等组成的光分配网（ODN）连接的网络 区别:ONU和ONT都是用户端的设备，本质上没什么区别，但如果非得区分则可以从名称看出区别：ONT是光网络终端，应用于最终用户，而ONU是指光网络单元，它与最终用户之间可能还有其他网络 举例:比如在一个小区里面，ONT是直接放在用户家中的设备，而ONU可能就是放置在楼道中，各个用户通过交换机等设备连接至ONU。]]></content>
+  </entry>
+  <entry>
     <title></title>
     <url>%2F2017%2F12%2F26%2Fzookeeper%E4%B9%8Bclient%E8%BF%9E%E6%8E%A5%2F</url>
     <content type="text"><![CDATA[路径###相关文件 #####1. 目录： org.apache.zookeeper #####2. 文件列表 ClientCnxn.java ClientCnxnSocket.java ClientCnxnSocketNIO.java ClientCnxnSocketNetty.java ClientWatchManager.java Zookeeper.java 建立连接####1. ZooKeeper.java Method 名: Zookeeper() Method 功能： 初始化 watch manager 设置默认 watch manager 解析 connect str 提供集群主机列表 初始化 ClientCnxnSocket对象(默认是 ClientCnxnSocketNIO) 创建ClientCnxn对象(主要操作都是靠这个对象来操作) start ClientCnxn对象 ####2. ClientCnxn.java #####2.1.1. Method 名：ClientCnxn() #####2.1.2. Method 功能： 设置对象的属性 new一个SendThread对象 new一个EventThread对象 #####2.2.1. Method 名: run() #####2.2.2. Method 功能：&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;主要是开启一个while循环，用来接收server端发来的数据以及发送数据给server端 设置clientCnxnSocket里面的一些queue等参数 如果client状态是正常的，则开始while循环 [while] 判断clientCnxnSocket连接是否OK。如果no，则建立连接 [while]判断是否需要发送ping来保持连接 [while]如果当前是只读模式，则去寻找可读写的Server [while]执行clientCnxnSocket的doTransport方法 ####3. ClientCnxnSocketNIO #####3.1.1. Method 名： doTransport() #####3.1.2. Method 功能：主要调用 doIO 方法来执行接收发送操作 接收数据，读packets到incomingBuffer 发送数据. 发送/接收数据 关键函数：doIO ###发送数据getChildren/exist/getData -&gt; cnxn.submitRequest -&gt; queuePacket -&gt; outgoingQueue.add - - - -&gt; doTransport -&gt; doIO -&gt; findSendablePacket -&gt; pendingQueue -&gt; pendingQueue.add()备注：发送数据会有while循环判断packet是否finish所以发送数据还需要参考接收数据的处理返回值 ###接收数据 #####1. 处理callback和watcherdoTransport -&gt; doIO -&gt; sendThread.readResponse -&gt; eventThread.queue[Packets/Events] -&gt; Watcher.process /Callback.processResult #####2. 处理返回值doTransport -&gt; doIO -&gt; sendThread.readResponse -&gt; ‘set packet.finish to true’ -&gt; 发送等待处返回结果]]></content>

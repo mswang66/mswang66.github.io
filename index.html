@@ -283,6 +283,382 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="https://mswang66.github.io/2018/01/10/kubernetes环境搭建之minikube/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="longsheng.wang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="鸣晟古姬de博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2018/01/10/kubernetes环境搭建之minikube/" itemprop="url">
+                  kubernetes环境搭建之minikube方式
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-10T15:20:47+08:00">
+                2018-01-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="minikube安装"><a href="#minikube安装" class="headerlink" title="minikube安装"></a>minikube安装</h1><p><a href="https://kubernetes.io/docs/tasks/tools/install-minikube/" target="_blank" rel="noopener">官网安装教程</a> </p>
+<p><strong>官网已经有详细的教程，下面简要介绍一下安装步骤以及注意事项</strong></p>
+<h3 id="安装步骤："><a href="#安装步骤：" class="headerlink" title="安装步骤："></a>安装步骤：</h3><h5 id="1-安装虚拟化产品-kvm、virtualbox、vmware等等"><a href="#1-安装虚拟化产品-kvm、virtualbox、vmware等等" class="headerlink" title="1.  安装虚拟化产品 (kvm、virtualbox、vmware等等)"></a>1.  安装虚拟化产品 (kvm、virtualbox、vmware等等)</h5><h5 id="2-下载安装-kubectl"><a href="#2-下载安装-kubectl" class="headerlink" title="2. 下载安装 kubectl"></a>2. 下载安装 kubectl</h5><h5 id="3-下载安装minikube"><a href="#3-下载安装minikube" class="headerlink" title="3. 下载安装minikube"></a>3. 下载安装minikube</h5><h3 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h3><h5 id="1-因为是google的玩意，所以只能翻出去。请自行搞个代理"><a href="#1-因为是google的玩意，所以只能翻出去。请自行搞个代理" class="headerlink" title="1. 因为是google的玩意，所以只能翻出去。请自行搞个代理"></a>1. 因为是google的玩意，所以只能翻出去。请自行搞个代理</h5><h5 id="2-第一次运行的时候一定要注意，需要根据自身虚拟化功能来设置"><a href="#2-第一次运行的时候一定要注意，需要根据自身虚拟化功能来设置" class="headerlink" title="2. 第一次运行的时候一定要注意，需要根据自身虚拟化功能来设置"></a>2. 第一次运行的时候一定要注意，需要根据自身虚拟化功能来设置</h5><pre><code>比如： `minikube start --vm-driver=kvm2`
+</code></pre><div style="color:red">因为第一次运行的时候是要从官网下载对应的镜像。如果需要重新指定driver，最好把之前的iso删掉(我是把整个<code>~/.minikube</code> 都删掉了)</div>
+
+<h5 id="3-第一次运行-minikube-start-vm-driver-kvm2报错如下"><a href="#3-第一次运行-minikube-start-vm-driver-kvm2报错如下" class="headerlink" title="3. 第一次运行 minikube start --vm-driver=kvm2报错如下"></a>3. 第一次运行 <code>minikube start --vm-driver=kvm2</code>报错如下</h5><pre><code>Error starting host:  Error creating host: Error creating machine: Error in driver during machine creation: Error creating VM: virError(Code=55, Domain=19, Message=&apos;所需操作无效：network &apos;default&apos; is not active&apos;)
+</code></pre><p>解决办法：需要去修改 libvirt的default网络<br>详细步骤：</p>
+<ul>
+<li>1、 <code>virsh net-edit default</code></li>
+<li>2、 修改ip address（我本地是因为ip和其他网卡冲突了）</li>
+<li>3、 <code>virsh net-start default</code> (确保本地没有default 文件中的 bridge name)</li>
+</ul>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="https://mswang66.github.io/2018/01/04/kubernetes环境搭建(MAC)/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="longsheng.wang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="鸣晟古姬de博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2018/01/04/kubernetes环境搭建(MAC)/" itemprop="url">
+                  未命名
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-04T17:58:06+08:00">
+                2018-01-04
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>官方文档: <a href="https://kubernetes.io/docs/tasks/tools/install-minikube/" target="_blank" rel="noopener">https://kubernetes.io/docs/tasks/tools/install-minikube/</a></p>
+<h1 id="1-Install-kubectl"><a href="#1-Install-kubectl" class="headerlink" title="1. Install kubectl"></a>1. Install kubectl</h1><h2 id="下载kubectl"><a href="#下载kubectl" class="headerlink" title="下载kubectl"></a>下载kubectl</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -LO https://storage.googleapis.com/kubernetes-release/release/`curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt`/bin/darwin/amd64/kubectl</span><br></pre></td></tr></table></figure>
+<h2 id="添加权限"><a href="#添加权限" class="headerlink" title="添加权限"></a>添加权限</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">chmod +x ./kubectl</span><br></pre></td></tr></table></figure>
+<h1 id="2-安装-minikube"><a href="#2-安装-minikube" class="headerlink" title="2. 安装 minikube"></a>2. 安装 minikube</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -Lo minikube https://storage.googleapis.com/minikube/releases/v0.24.1/minikube-darwin-amd64 &amp;&amp; chmod +x minikube &amp;&amp; sudo mv minikube /usr/local/bin/</span><br></pre></td></tr></table></figure>
+<h1 id="3-下载minikube-iso"><a href="#3-下载minikube-iso" class="headerlink" title="3. 下载minikube iso"></a>3. 下载minikube iso</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wget https://storage.googleapis.com/minikube/iso/minikube-v0.23.6.iso</span><br></pre></td></tr></table></figure>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="https://mswang66.github.io/2018/01/03/ONOS-cord-相关概念/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="longsheng.wang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="鸣晟古姬de博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2018/01/03/ONOS-cord-相关概念/" itemprop="url">
+                  Onos cord 相关概念
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-03T14:35:48+08:00">
+                2018-01-03
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>学习onos cord的知识储备</p>
+<h1 id="Part1"><a href="#Part1" class="headerlink" title="Part1."></a>Part1.</h1><h3 id="1-OLT"><a href="#1-OLT" class="headerlink" title="1. OLT"></a>1. OLT</h3><p> Optional Line Terminal 光线路终端</p>
+<h3 id="2-ONF"><a href="#2-ONF" class="headerlink" title="2. ONF"></a>2. ONF</h3><p> Optional Network Terminal 光网络终端</p>
+<h3 id="3-ONU"><a href="#3-ONU" class="headerlink" title="3. ONU"></a>3. ONU</h3><p> Optional Network Unit 光网络单元</p>
+<h5 id="关系"><a href="#关系" class="headerlink" title="关系:"></a><strong>关系</strong>:</h5><p>局端设备（OLT）与多个用户端设备（ONU/ONT）之间通过无源的光缆、光分/合路器等组成的光分配网（ODN）连接的网络</p>
+<h5 id="区别"><a href="#区别" class="headerlink" title="区别:"></a><strong>区别</strong>:</h5><p>ONU和ONT都是用户端的设备，本质上没什么区别，但如果非得区分则可以从名称看出区别：ONT是光网络终端，应用于最终用户，而ONU是指光网络单元，它与最终用户之间可能还有其他网络</p>
+<h5 id="举例"><a href="#举例" class="headerlink" title="举例:"></a><strong>举例</strong>:</h5><p>比如在一个小区里面，ONT是直接放在用户家中的设备，而ONU可能就是放置在楼道中，各个用户通过交换机等设备连接至ONU。</p>
+<hr>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="https://mswang66.github.io/2017/12/26/zookeeper之client连接/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -740,7 +1116,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">3</span>
+                <span class="site-state-item-count">6</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
