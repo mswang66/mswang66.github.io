@@ -87,17 +87,17 @@
 
 
 
-<meta name="description" content="title:zookeeper之client连接路径相关文件1. 目录： org.apache.zookeeper2. 文件列表 ClientCnxn.java ClientCnxnSocket.java ClientCnxnSocketNIO.java ClientCnxnSocketNetty.java ClientWatchManager.java Zookeeper.java  建立连接">
+<meta name="description" content="路径相关文件1. 目录： org.apache.zookeeper2. 文件列表 ClientCnxn.java ClientCnxnSocket.java ClientCnxnSocketNIO.java ClientCnxnSocketNetty.java ClientWatchManager.java Zookeeper.java  建立连接1. ZooKeeper.javaMethod 名">
 <meta property="og:type" content="article">
-<meta property="og:title" content="鸣晟古姬de博客">
+<meta property="og:title" content="zookeeper之client连接">
 <meta property="og:url" content="https://mswang66.github.io/2017/12/26/zookeeper之client连接/index.html">
 <meta property="og:site_name" content="鸣晟古姬de博客">
-<meta property="og:description" content="title:zookeeper之client连接路径相关文件1. 目录： org.apache.zookeeper2. 文件列表 ClientCnxn.java ClientCnxnSocket.java ClientCnxnSocketNIO.java ClientCnxnSocketNetty.java ClientWatchManager.java Zookeeper.java  建立连接">
+<meta property="og:description" content="路径相关文件1. 目录： org.apache.zookeeper2. 文件列表 ClientCnxn.java ClientCnxnSocket.java ClientCnxnSocketNIO.java ClientCnxnSocketNetty.java ClientWatchManager.java Zookeeper.java  建立连接1. ZooKeeper.javaMethod 名">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-01-10T07:31:13.775Z">
+<meta property="og:updated_time" content="2018-01-10T07:31:49.470Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="鸣晟古姬de博客">
-<meta name="twitter:description" content="title:zookeeper之client连接路径相关文件1. 目录： org.apache.zookeeper2. 文件列表 ClientCnxn.java ClientCnxnSocket.java ClientCnxnSocketNIO.java ClientCnxnSocketNetty.java ClientWatchManager.java Zookeeper.java  建立连接">
+<meta name="twitter:title" content="zookeeper之client连接">
+<meta name="twitter:description" content="路径相关文件1. 目录： org.apache.zookeeper2. 文件列表 ClientCnxn.java ClientCnxnSocket.java ClientCnxnSocketNIO.java ClientCnxnSocketNetty.java ClientWatchManager.java Zookeeper.java  建立连接1. ZooKeeper.javaMethod 名">
 
 
 
@@ -131,7 +131,7 @@
 
 
 
-  <title>  | 鸣晟古姬de博客 </title>
+  <title> zookeeper之client连接 | 鸣晟古姬de博客 </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -303,7 +303,7 @@
             
             
               
-                
+                zookeeper之client连接
               
             
           </h1>
@@ -354,8 +354,7 @@
       
 
       
-        <hr>
-<h2 id="title-zookeeper之client连接"><a href="#title-zookeeper之client连接" class="headerlink" title="title:zookeeper之client连接"></a>title:zookeeper之client连接</h2><h2 id="路径"><a href="#路径" class="headerlink" title="路径"></a>路径</h2><h3 id="相关文件"><a href="#相关文件" class="headerlink" title="相关文件"></a>相关文件</h3><h5 id="1-目录：-org-apache-zookeeper"><a href="#1-目录：-org-apache-zookeeper" class="headerlink" title="1. 目录： org.apache.zookeeper"></a>1. 目录： org.apache.zookeeper</h5><h5 id="2-文件列表"><a href="#2-文件列表" class="headerlink" title="2. 文件列表"></a>2. 文件列表</h5><ul>
+        <h2 id="路径"><a href="#路径" class="headerlink" title="路径"></a>路径</h2><h3 id="相关文件"><a href="#相关文件" class="headerlink" title="相关文件"></a>相关文件</h3><h5 id="1-目录：-org-apache-zookeeper"><a href="#1-目录：-org-apache-zookeeper" class="headerlink" title="1. 目录： org.apache.zookeeper"></a>1. 目录： org.apache.zookeeper</h5><h5 id="2-文件列表"><a href="#2-文件列表" class="headerlink" title="2. 文件列表"></a>2. 文件列表</h5><ul>
 <li>ClientCnxn.java</li>
 <li>ClientCnxnSocket.java</li>
 <li>ClientCnxnSocketNIO.java</li>
@@ -552,7 +551,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#title-zookeeper之client连接"><span class="nav-number">1.</span> <span class="nav-text">title:zookeeper之client连接</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#路径"><span class="nav-number">2.</span> <span class="nav-text">路径</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#相关文件"><span class="nav-number">2.1.</span> <span class="nav-text">相关文件</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-目录：-org-apache-zookeeper"><span class="nav-number">2.1.0.1.</span> <span class="nav-text">1. 目录： org.apache.zookeeper</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-文件列表"><span class="nav-number">2.1.0.2.</span> <span class="nav-text">2. 文件列表</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#建立连接"><span class="nav-number">3.</span> <span class="nav-text">建立连接</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-ZooKeeper-java"><span class="nav-number">3.0.1.</span> <span class="nav-text">1. ZooKeeper.java</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-ClientCnxn-java"><span class="nav-number">3.0.2.</span> <span class="nav-text">2. ClientCnxn.java</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#2-1-1-Method-名：ClientCnxn"><span class="nav-number">3.0.2.1.</span> <span class="nav-text">2.1.1. Method 名：ClientCnxn()</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-1-2-Method-功能："><span class="nav-number">3.0.2.2.</span> <span class="nav-text">2.1.2. Method 功能：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-2-1-Method-名-run"><span class="nav-number">3.0.2.3.</span> <span class="nav-text">2.2.1. Method 名: run()</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-2-2-Method-功能："><span class="nav-number">3.0.2.4.</span> <span class="nav-text">2.2.2. Method 功能：</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-ClientCnxnSocketNIO"><span class="nav-number">3.0.3.</span> <span class="nav-text">3. ClientCnxnSocketNIO</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#3-1-1-Method-名：-doTransport"><span class="nav-number">3.0.3.1.</span> <span class="nav-text">3.1.1. Method 名： doTransport()</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#3-1-2-Method-功能："><span class="nav-number">3.0.3.2.</span> <span class="nav-text">3.1.2. Method 功能：</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#发送-接收数据"><span class="nav-number">4.</span> <span class="nav-text">发送/接收数据</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#发送数据"><span class="nav-number">4.1.</span> <span class="nav-text">发送数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#接收数据"><span class="nav-number">4.2.</span> <span class="nav-text">接收数据</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-处理callback和watcher"><span class="nav-number">4.2.0.1.</span> <span class="nav-text">1. 处理callback和watcher</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-处理返回值"><span class="nav-number">4.2.0.2.</span> <span class="nav-text">2. 处理返回值</span></a></li></ol></li></ol></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#路径"><span class="nav-number">1.</span> <span class="nav-text">路径</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#相关文件"><span class="nav-number">1.1.</span> <span class="nav-text">相关文件</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-目录：-org-apache-zookeeper"><span class="nav-number">1.1.0.1.</span> <span class="nav-text">1. 目录： org.apache.zookeeper</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-文件列表"><span class="nav-number">1.1.0.2.</span> <span class="nav-text">2. 文件列表</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#建立连接"><span class="nav-number">2.</span> <span class="nav-text">建立连接</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-ZooKeeper-java"><span class="nav-number">2.0.1.</span> <span class="nav-text">1. ZooKeeper.java</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-ClientCnxn-java"><span class="nav-number">2.0.2.</span> <span class="nav-text">2. ClientCnxn.java</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#2-1-1-Method-名：ClientCnxn"><span class="nav-number">2.0.2.1.</span> <span class="nav-text">2.1.1. Method 名：ClientCnxn()</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-1-2-Method-功能："><span class="nav-number">2.0.2.2.</span> <span class="nav-text">2.1.2. Method 功能：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-2-1-Method-名-run"><span class="nav-number">2.0.2.3.</span> <span class="nav-text">2.2.1. Method 名: run()</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-2-2-Method-功能："><span class="nav-number">2.0.2.4.</span> <span class="nav-text">2.2.2. Method 功能：</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-ClientCnxnSocketNIO"><span class="nav-number">2.0.3.</span> <span class="nav-text">3. ClientCnxnSocketNIO</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#3-1-1-Method-名：-doTransport"><span class="nav-number">2.0.3.1.</span> <span class="nav-text">3.1.1. Method 名： doTransport()</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#3-1-2-Method-功能："><span class="nav-number">2.0.3.2.</span> <span class="nav-text">3.1.2. Method 功能：</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#发送-接收数据"><span class="nav-number">3.</span> <span class="nav-text">发送/接收数据</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#发送数据"><span class="nav-number">3.1.</span> <span class="nav-text">发送数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#接收数据"><span class="nav-number">3.2.</span> <span class="nav-text">接收数据</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-处理callback和watcher"><span class="nav-number">3.2.0.1.</span> <span class="nav-text">1. 处理callback和watcher</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-处理返回值"><span class="nav-number">3.2.0.2.</span> <span class="nav-text">2. 处理返回值</span></a></li></ol></li></ol></li></ol></li></ol></div>
             
 
           </div>
