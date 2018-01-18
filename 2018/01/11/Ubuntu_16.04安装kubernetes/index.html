@@ -87,17 +87,17 @@
 
 
 
-<meta name="description" content="路径相关文件1. 目录： org.apache.zookeeper2. 文件列表 ClientCnxn.java ClientCnxnSocket.java ClientCnxnSocketNIO.java ClientCnxnSocketNetty.java ClientWatchManager.java Zookeeper.java  建立连接1. ZooKeeper.javaMethod 名">
+<meta name="description" content="#Ubuntu 16.04 安装 kubernetes 1. 更新apt源123456# curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key addOK# echo &amp;quot;deb http://apt.kubernetes.io/ kubernetes-xenial main&amp;quot; &amp;gt; /">
 <meta property="og:type" content="article">
-<meta property="og:title" content="zookeeper之client连接">
-<meta property="og:url" content="https://mswang66.github.io/2017/12/26/zookeeper之client连接/index.html">
+<meta property="og:title" content="Ubuntu 16.04 安装 kubernetes">
+<meta property="og:url" content="https://mswang66.github.io/2018/01/11/Ubuntu_16.04安装kubernetes/index.html">
 <meta property="og:site_name" content="鸣晟古姬de博客">
-<meta property="og:description" content="路径相关文件1. 目录： org.apache.zookeeper2. 文件列表 ClientCnxn.java ClientCnxnSocket.java ClientCnxnSocketNIO.java ClientCnxnSocketNetty.java ClientWatchManager.java Zookeeper.java  建立连接1. ZooKeeper.javaMethod 名">
+<meta property="og:description" content="#Ubuntu 16.04 安装 kubernetes 1. 更新apt源123456# curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key addOK# echo &amp;quot;deb http://apt.kubernetes.io/ kubernetes-xenial main&amp;quot; &amp;gt; /">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-01-10T07:31:49.470Z">
+<meta property="og:updated_time" content="2018-01-11T06:38:22.262Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="zookeeper之client连接">
-<meta name="twitter:description" content="路径相关文件1. 目录： org.apache.zookeeper2. 文件列表 ClientCnxn.java ClientCnxnSocket.java ClientCnxnSocketNIO.java ClientCnxnSocketNetty.java ClientWatchManager.java Zookeeper.java  建立连接1. ZooKeeper.javaMethod 名">
+<meta name="twitter:title" content="Ubuntu 16.04 安装 kubernetes">
+<meta name="twitter:description" content="#Ubuntu 16.04 安装 kubernetes 1. 更新apt源123456# curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key addOK# echo &amp;quot;deb http://apt.kubernetes.io/ kubernetes-xenial main&amp;quot; &amp;gt; /">
 
 
 
@@ -125,13 +125,13 @@
 
 
 
-  <link rel="canonical" href="https://mswang66.github.io/2017/12/26/zookeeper之client连接/"/>
+  <link rel="canonical" href="https://mswang66.github.io/2018/01/11/Ubuntu_16.04安装kubernetes/"/>
 
 
 
 
 
-  <title> zookeeper之client连接 | 鸣晟古姬de博客 </title>
+  <title> Ubuntu 16.04 安装 kubernetes | 鸣晟古姬de博客 </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -282,7 +282,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="https://mswang66.github.io/2017/12/26/zookeeper之client连接/">
+    <link itemprop="mainEntityOfPage" href="https://mswang66.github.io/2018/01/11/Ubuntu_16.04安装kubernetes/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="longsheng.wang">
@@ -303,7 +303,7 @@
             
             
               
-                zookeeper之client连接
+                Ubuntu 16.04 安装 kubernetes
               
             
           </h1>
@@ -318,8 +318,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-12-26T16:56:07+08:00">
-                2017-12-26
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-11T14:37:28+08:00">
+                2018-01-11
               </time>
             
 
@@ -354,51 +354,10 @@
       
 
       
-        <h2 id="路径"><a href="#路径" class="headerlink" title="路径"></a>路径</h2><h3 id="相关文件"><a href="#相关文件" class="headerlink" title="相关文件"></a>相关文件</h3><h5 id="1-目录：-org-apache-zookeeper"><a href="#1-目录：-org-apache-zookeeper" class="headerlink" title="1. 目录： org.apache.zookeeper"></a>1. 目录： org.apache.zookeeper</h5><h5 id="2-文件列表"><a href="#2-文件列表" class="headerlink" title="2. 文件列表"></a>2. 文件列表</h5><ul>
-<li>ClientCnxn.java</li>
-<li>ClientCnxnSocket.java</li>
-<li>ClientCnxnSocketNIO.java</li>
-<li>ClientCnxnSocketNetty.java</li>
-<li>ClientWatchManager.java</li>
-<li>Zookeeper.java</li>
-</ul>
-<h2 id="建立连接"><a href="#建立连接" class="headerlink" title="建立连接"></a>建立连接</h2><h4 id="1-ZooKeeper-java"><a href="#1-ZooKeeper-java" class="headerlink" title="1. ZooKeeper.java"></a>1. ZooKeeper.java</h4><p>Method 名: Zookeeper()</p>
-<p>Method 功能：</p>
-<ul>
-<li>初始化 watch manager</li>
-<li>设置默认 watch manager</li>
-<li>解析 connect str</li>
-<li>提供集群主机列表</li>
-<li>初始化 <code>ClientCnxnSocket</code>对象(默认是 ClientCnxnSocketNIO)</li>
-<li>创建<code>ClientCnxn</code>对象(主要操作都是靠这个对象来操作)</li>
-<li>start <code>ClientCnxn</code>对象</li>
-</ul>
-<h4 id="2-ClientCnxn-java"><a href="#2-ClientCnxn-java" class="headerlink" title="2. ClientCnxn.java"></a>2. ClientCnxn.java</h4><h5 id="2-1-1-Method-名：ClientCnxn"><a href="#2-1-1-Method-名：ClientCnxn" class="headerlink" title="2.1.1. Method 名：ClientCnxn()"></a>2.1.1. Method 名：ClientCnxn()</h5><h5 id="2-1-2-Method-功能："><a href="#2-1-2-Method-功能：" class="headerlink" title="2.1.2. Method 功能："></a>2.1.2. Method 功能：</h5><ul>
-<li>设置对象的属性</li>
-<li>new一个<code>SendThread</code>对象</li>
-<li>new一个<code>EventThread</code>对象</li>
-</ul>
-<h5 id="2-2-1-Method-名-run"><a href="#2-2-1-Method-名-run" class="headerlink" title="2.2.1. Method 名: run()"></a>2.2.1. Method 名: run()</h5><h5 id="2-2-2-Method-功能："><a href="#2-2-2-Method-功能：" class="headerlink" title="2.2.2. Method 功能："></a>2.2.2. Method 功能：</h5><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;主要是开启一个while循环，用来接收server端发来的数据以及发送数据给server端</p>
-<ul>
-<li>设置clientCnxnSocket里面的一些queue等参数</li>
-<li>如果client状态是正常的，则开始while循环</li>
-<li>[<strong>while</strong>] 判断clientCnxnSocket连接是否OK。如果no，则建立连接</li>
-<li>[<strong>while</strong>]判断是否需要发送ping来保持连接</li>
-<li>[<strong>while</strong>]如果当前是只读模式，则去寻找可读写的Server</li>
-<li>[<strong>while</strong>]执行clientCnxnSocket的doTransport方法</li>
-</ul>
-<h4 id="3-ClientCnxnSocketNIO"><a href="#3-ClientCnxnSocketNIO" class="headerlink" title="3. ClientCnxnSocketNIO"></a>3. ClientCnxnSocketNIO</h4><h5 id="3-1-1-Method-名：-doTransport"><a href="#3-1-1-Method-名：-doTransport" class="headerlink" title="3.1.1. Method 名： doTransport()"></a>3.1.1. Method 名： doTransport()</h5><h5 id="3-1-2-Method-功能："><a href="#3-1-2-Method-功能：" class="headerlink" title="3.1.2. Method 功能："></a>3.1.2. Method 功能：</h5><p>主要调用 doIO 方法来执行接收发送操作</p>
-<ul>
-<li>接收数据，读packets到incomingBuffer</li>
-<li>发送数据.</li>
-</ul>
-<h2 id="发送-接收数据"><a href="#发送-接收数据" class="headerlink" title="发送/接收数据"></a>发送/接收数据</h2><blockquote>
-<p><strong>关键函数：doIO</strong></p>
-</blockquote>
-<h3 id="发送数据"><a href="#发送数据" class="headerlink" title="发送数据"></a>发送数据</h3><p>getChildren/exist/getData -&gt; cnxn.submitRequest -&gt; queuePacket -&gt; outgoingQueue.add - - - -&gt; doTransport -&gt; doIO -&gt; findSendablePacket -&gt; pendingQueue -&gt; pendingQueue.add()<br>备注：发送数据会有while循环判断packet是否finish<br>所以发送数据还需要参考<code>接收数据</code>的<code>处理返回值</code></p>
-<h3 id="接收数据"><a href="#接收数据" class="headerlink" title="接收数据"></a>接收数据</h3><h5 id="1-处理callback和watcher"><a href="#1-处理callback和watcher" class="headerlink" title="1. 处理callback和watcher"></a>1. 处理callback和watcher</h5><p>doTransport -&gt; doIO -&gt; sendThread.readResponse -&gt; eventThread.queue[Packets/Events] -&gt; Watcher.process /Callback.processResult</p>
-<h5 id="2-处理返回值"><a href="#2-处理返回值" class="headerlink" title="2. 处理返回值"></a>2. 处理返回值</h5><p>doTransport -&gt; doIO -&gt; sendThread.readResponse -&gt; ‘set packet.finish to true’ -&gt;   发送等待处返回结果</p>
-
+        <p>#Ubuntu 16.04 安装 kubernetes</p>
+<h2 id="1-更新apt源"><a href="#1-更新apt源" class="headerlink" title="1. 更新apt源"></a>1. 更新apt源</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"># curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add</span><br><span class="line">OK</span><br><span class="line"></span><br><span class="line"># echo &quot;deb http://apt.kubernetes.io/ kubernetes-xenial main&quot; &gt; /etc/apt/sources.list.d/kubernetes.list</span><br><span class="line"></span><br><span class="line"># apt-get update</span><br></pre></td></tr></table></figure>
+<h2 id="2-安装docker"><a href="#2-安装docker" class="headerlink" title="2. 安装docker"></a>2. 安装docker</h2><p>手动安装方式： 打开 <a href="https://apt.dockerproject.org/repo/dists/ubuntu-xenial/main/filelist" target="_blank" rel="noopener">https://apt.dockerproject.org/repo/dists/ubuntu-xenial/main/filelist</a> 可以看到有docker的版本列表<br>下载需要的版本自行安装<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">/volumes/repos/apt/repo/pool/main/d/docker-engine/docker-engine_17.03.1~ce-0~ubuntu-xenial_amd64.deb</span><br><span class="line">/volumes/repos/apt/repo/pool/main/d/docker-engine/docker-engine_1.12.3-0~xenial_amd64.deb</span><br><span class="line">/volumes/repos/apt/repo/pool/main/d/docker-engine/docker-engine_17.03.0~ce-0~ubuntu-xenial_amd64.deb</span><br><span class="line">/volumes/repos/apt/repo/pool/main/d/docker-engine/docker-engine_1.12.0-0~xenial_amd64.deb</span><br><span class="line">/volumes/repos/apt/repo/pool/main/d/docker-engine/docker-engine_17.05.0~ce-0~ubuntu-xenial_armhf.deb</span><br><span class="line">/volumes/repos/apt/repo/pool/main/d/docker-engine/docker-engine_1.12.5-0~ubuntu-xenial_amd64.deb</span><br><span class="line">/volumes/repos/apt/repo/pool/main/d/docker-engine/docker-engine_1.13.1-0~ubuntu-xenial_armhf.deb</span><br><span class="line">/volumes/repos/apt/repo/pool/main/d/docker-engine/docker-engine_1.11.0-0~xenial_amd64.deb</span><br><span class="line">/volumes/repos/apt/repo/pool/main/d/docker-engine/docker-engine_1.11.1-0~xenial_amd64.deb</span><br><span class="line">/volumes/repos/apt/repo/pool/main/d/docker-engine/docker-engine_1.13.0-0~ubuntu-xenial_armhf.deb</span><br><span class="line">/volumes/repos/apt/repo/pool/main/d/docker-engine/docker-engine_1.12.2-0~xenial_amd64.deb</span><br><span class="line">/volumes/repos/apt/repo/pool/main/d/docker-engine/docker-engine_1.12.4-0~ubuntu-xenial_amd64.deb</span><br><span class="line">/volumes/repos/apt/repo/pool/main/d/docker-engine/docker-engine_17.05.0~ce-0~ubuntu-xenial_amd64.deb</span><br><span class="line">/volumes/repos/apt/repo/pool/main/d/docker-engine/docker-engine_1.12.6-0~ubuntu-xenial_amd64.deb</span><br><span class="line">/volumes/repos/apt/repo/pool/main/d/docker-engine/docker-engine_17.03.0~ce-0~ubuntu-xenial_armhf.deb</span><br><span class="line">/volumes/repos/apt/repo/pool/main/d/docker-engine/docker-engine_1.13.1-0~ubuntu-xenial_amd64.deb</span><br><span class="line">/volumes/repos/apt/repo/pool/main/d/docker-engine/docker-engine_1.11.2-0~xenial_amd64.deb</span><br><span class="line">/volumes/repos/apt/repo/pool/main/d/docker-engine/docker-engine_1.13.0-0~ubuntu-xenial_amd64.deb</span><br><span class="line">/volumes/repos/apt/repo/pool/main/d/docker-engine/docker-engine_17.04.0~ce-0~ubuntu-xenial_amd64.deb</span><br><span class="line">/volumes/repos/apt/repo/pool/main/d/docker-engine/docker-engine_1.12.1-0~xenial_amd64.deb</span><br><span class="line">/volumes/repos/apt/repo/pool/main/d/docker-engine/docker-engine_17.03.1~ce-0~ubuntu-xenial_armhf.deb</span><br><span class="line">/volumes/repos/apt/repo/pool/main/d/docker-engine/docker-engine_17.04.0~ce-0~ubuntu-xenial_armhf.deb</span><br></pre></td></tr></table></figure></p>
+<h2 id="3-安装kubernates基础组件"><a href="#3-安装kubernates基础组件" class="headerlink" title="3. 安装kubernates基础组件"></a>3. 安装kubernates基础组件</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">apt-get install -y kubelet kubeadm kubectl kubernetes-cni</span><br></pre></td></tr></table></figure>
       
     </div>
 
@@ -428,8 +387,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/12/21/hello-world/" rel="next" title="Hello World">
-                <i class="fa fa-chevron-left"></i> Hello World
+              <a href="/2018/01/10/kubernetes环境搭建之minikube/" rel="next" title="kubernetes环境搭建之minikube方式">
+                <i class="fa fa-chevron-left"></i> kubernetes环境搭建之minikube方式
               </a>
             
           </div>
@@ -438,8 +397,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2018/01/03/ONOS-cord-相关概念/" rel="prev" title="Onos cord 相关概念">
-                Onos cord 相关概念 <i class="fa fa-chevron-right"></i>
+              <a href="/2018/01/16/cloudview应对修改admin密码/" rel="prev" title="">
+                 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -551,7 +510,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#路径"><span class="nav-number">1.</span> <span class="nav-text">路径</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#相关文件"><span class="nav-number">1.1.</span> <span class="nav-text">相关文件</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-目录：-org-apache-zookeeper"><span class="nav-number">1.1.0.1.</span> <span class="nav-text">1. 目录： org.apache.zookeeper</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-文件列表"><span class="nav-number">1.1.0.2.</span> <span class="nav-text">2. 文件列表</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#建立连接"><span class="nav-number">2.</span> <span class="nav-text">建立连接</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-ZooKeeper-java"><span class="nav-number">2.0.1.</span> <span class="nav-text">1. ZooKeeper.java</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-ClientCnxn-java"><span class="nav-number">2.0.2.</span> <span class="nav-text">2. ClientCnxn.java</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#2-1-1-Method-名：ClientCnxn"><span class="nav-number">2.0.2.1.</span> <span class="nav-text">2.1.1. Method 名：ClientCnxn()</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-1-2-Method-功能："><span class="nav-number">2.0.2.2.</span> <span class="nav-text">2.1.2. Method 功能：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-2-1-Method-名-run"><span class="nav-number">2.0.2.3.</span> <span class="nav-text">2.2.1. Method 名: run()</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-2-2-Method-功能："><span class="nav-number">2.0.2.4.</span> <span class="nav-text">2.2.2. Method 功能：</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-ClientCnxnSocketNIO"><span class="nav-number">2.0.3.</span> <span class="nav-text">3. ClientCnxnSocketNIO</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#3-1-1-Method-名：-doTransport"><span class="nav-number">2.0.3.1.</span> <span class="nav-text">3.1.1. Method 名： doTransport()</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#3-1-2-Method-功能："><span class="nav-number">2.0.3.2.</span> <span class="nav-text">3.1.2. Method 功能：</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#发送-接收数据"><span class="nav-number">3.</span> <span class="nav-text">发送/接收数据</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#发送数据"><span class="nav-number">3.1.</span> <span class="nav-text">发送数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#接收数据"><span class="nav-number">3.2.</span> <span class="nav-text">接收数据</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-处理callback和watcher"><span class="nav-number">3.2.0.1.</span> <span class="nav-text">1. 处理callback和watcher</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-处理返回值"><span class="nav-number">3.2.0.2.</span> <span class="nav-text">2. 处理返回值</span></a></li></ol></li></ol></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-更新apt源"><span class="nav-number">1.</span> <span class="nav-text">1. 更新apt源</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-安装docker"><span class="nav-number">2.</span> <span class="nav-text">2. 安装docker</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-安装kubernates基础组件"><span class="nav-number">3.</span> <span class="nav-text">3. 安装kubernates基础组件</span></a></li></ol></div>
             
 
           </div>

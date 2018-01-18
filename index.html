@@ -283,6 +283,380 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="https://mswang66.github.io/2018/01/18/openstack的vnc卡顿解决办法/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="longsheng.wang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="鸣晟古姬de博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2018/01/18/openstack的vnc卡顿解决办法/" itemprop="url">
+                  Openstack的vnc卡顿办法
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-18T17:44:18+08:00">
+                2018-01-18
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="openstack的vnc界面在chrome很卡的解决办法"><a href="#openstack的vnc界面在chrome很卡的解决办法" class="headerlink" title="openstack的vnc界面在chrome很卡的解决办法"></a>openstack的vnc界面在chrome很卡的解决办法</h1><h3 id="前言-其实一直都发现这个问题，之前懒得去理，需要用的时候用vnc-client就可以解决了。但是到客户那边需要演示，肯定需要用openstack界面去操作。这次修改也是因为现场演示的时候，chrome上的vnc直接卡死"><a href="#前言-其实一直都发现这个问题，之前懒得去理，需要用的时候用vnc-client就可以解决了。但是到客户那边需要演示，肯定需要用openstack界面去操作。这次修改也是因为现场演示的时候，chrome上的vnc直接卡死" class="headerlink" title="前言: 其实一直都发现这个问题，之前懒得去理，需要用的时候用vnc client就可以解决了。但是到客户那边需要演示，肯定需要用openstack界面去操作。这次修改也是因为现场演示的时候，chrome上的vnc直接卡死"></a>前言: 其实一直都发现这个问题，之前懒得去理，需要用的时候用vnc client就可以解决了。但是到客户那边需要演示，肯定需要用openstack界面去操作。这次修改也是因为现场演示的时候，chrome上的vnc直接卡死</h3><h3 id="解决办法："><a href="#解决办法：" class="headerlink" title="解决办法："></a>解决办法：</h3><h5 id="1-首先打开vnc的界面，通过console查看对应的js文件，来找出vnc的代码是哪个模块的代码"><a href="#1-首先打开vnc的界面，通过console查看对应的js文件，来找出vnc的代码是哪个模块的代码" class="headerlink" title="1. 首先打开vnc的界面，通过console查看对应的js文件，来找出vnc的代码是哪个模块的代码"></a>1. 首先打开vnc的界面，通过console查看对应的js文件，来找出vnc的代码是哪个模块的代码</h5><h5 id="2-找过nova代码和horizon代码，发现都没有，这就超出我的预料了，我预想中应该在这2个项目中的"><a href="#2-找过nova代码和horizon代码，发现都没有，这就超出我的预料了，我预想中应该在这2个项目中的" class="headerlink" title="2. 找过nova代码和horizon代码，发现都没有，这就超出我的预料了，我预想中应该在这2个项目中的"></a>2. 找过nova代码和horizon代码，发现都没有，这就超出我的预料了，我预想中应该在这2个项目中的</h5><h5 id="3-通过查看openstack的nova服务，发现-nova-novncproxy-服务存在，那肯定就在这个里面了，进去一开，果然"><a href="#3-通过查看openstack的nova服务，发现-nova-novncproxy-服务存在，那肯定就在这个里面了，进去一开，果然" class="headerlink" title="3. 通过查看openstack的nova服务，发现 nova-novncproxy 服务存在，那肯定就在这个里面了，进去一开，果然"></a>3. 通过查看openstack的nova服务，发现 nova-novncproxy 服务存在，那肯定就在这个里面了，进去一开，果然</h5><h5 id="4-查看openstack的安装教程-安装教程-发现，是用yum安装的openstack-nova-novncproxy"><a href="#4-查看openstack的安装教程-安装教程-发现，是用yum安装的openstack-nova-novncproxy" class="headerlink" title="4. 查看openstack的安装教程(安装教程)发现，是用yum安装的openstack-nova-novncproxy"></a>4. 查看openstack的安装教程(<a href="https://docs.openstack.org/nova/pike/install/controller-install-rdo.html" target="_blank" rel="noopener">安装教程</a>)发现，是用yum安装的openstack-nova-novncproxy</h5><h5 id="5-然后发现这块代码其实是-noVNC项目的代码。openstack用的noVNC的版本是0-5-1。-google一查，说是0-6-2可以解决这个问题。"><a href="#5-然后发现这块代码其实是-noVNC项目的代码。openstack用的noVNC的版本是0-5-1。-google一查，说是0-6-2可以解决这个问题。" class="headerlink" title="5. 然后发现这块代码其实是 noVNC项目的代码。openstack用的noVNC的版本是0.5.1。 google一查，说是0.6.2可以解决这个问题。"></a>5. 然后发现这块代码其实是 noVNC项目的代码。openstack用的noVNC的版本是0.5.1。 google一查，说是0.6.2可以解决这个问题。</h5><h5 id="6-然后下载对应的-0-6-2-下载地址-版本直接替换，然后重启-openstack-nova-novncproxy服务，发现OK"><a href="#6-然后下载对应的-0-6-2-下载地址-版本直接替换，然后重启-openstack-nova-novncproxy服务，发现OK" class="headerlink" title="6. 然后下载对应的 0.6.2 下载地址 版本直接替换，然后重启 openstack-nova-novncproxy服务，发现OK"></a>6. 然后下载对应的 <code>0.6.2</code> <a href="https://github.com/novnc/noVNC/releases" target="_blank" rel="noopener">下载地址</a> 版本直接替换，然后重启 openstack-nova-novncproxy服务，发现OK</h5><blockquote>
+<p>到这里问题就解决了，但是我们不能修改openstack的yum源，所以，我们需要自己制作一个novnc的rpm包</p>
+</blockquote>
+<p><br><br><br></p>
+<hr style="background-color: blue;display: block;
+    height: 1px;
+    border: 0;
+    border-top: 1px solid #ccc;
+    margin: 1em 0;
+    padding: 0; ">
+
+<h1 id="规范的安装方式"><a href="#规范的安装方式" class="headerlink" title="规范的安装方式"></a>规范的安装方式</h1><p>由于上述方法是手动替换noVNC的版本，这样太low了，不能作为安装的流程。So，我们需要做一个rpm包，然后替换原来的包。</p>
+<h3 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h3><h5 id="1-首先呢，得学习rpmbuild的安装教程，看了半天！突然想到，我把yum源的rpm包下载下来不就完事了嘛，只要简单修改一下"><a href="#1-首先呢，得学习rpmbuild的安装教程，看了半天！突然想到，我把yum源的rpm包下载下来不就完事了嘛，只要简单修改一下" class="headerlink" title="1. 首先呢，得学习rpmbuild的安装教程，看了半天！突然想到，我把yum源的rpm包下载下来不就完事了嘛，只要简单修改一下"></a>1. 首先呢，得学习rpmbuild的安装教程，看了半天！突然想到，我把yum源的rpm包下载下来不就完事了嘛，只要简单修改一下</h5><h5 id="2-从openstack的yum源上找（http-mirror-centos-org-centos-7-7-cloud-x86-64-openstack-ocata-common-）-下载novnc-0-5-1-2-el7-noarch-rpm"><a href="#2-从openstack的yum源上找（http-mirror-centos-org-centos-7-7-cloud-x86-64-openstack-ocata-common-）-下载novnc-0-5-1-2-el7-noarch-rpm" class="headerlink" title="2. 从openstack的yum源上找（http://mirror.centos.org/centos-7/7/cloud/x86_64/openstack-ocata/common/）,下载novnc-0.5.1-2.el7.noarch.rpm"></a>2. 从openstack的yum源上找（<a href="http://mirror.centos.org/centos-7/7/cloud/x86_64/openstack-ocata/common/" target="_blank" rel="noopener">http://mirror.centos.org/centos-7/7/cloud/x86_64/openstack-ocata/common/</a>）,下载<code>novnc-0.5.1-2.el7.noarch.rpm</code></h5><h5 id="3-然后解压缩-rpm2cpio-novnc-0-5-1-2-el6-src-rpm-cpio-div-解压出来会有3个文件-novnc-0-4-manpage-patch-novnc-spec，-v0-5-1-tar-gz"><a href="#3-然后解压缩-rpm2cpio-novnc-0-5-1-2-el6-src-rpm-cpio-div-解压出来会有3个文件-novnc-0-4-manpage-patch-novnc-spec，-v0-5-1-tar-gz" class="headerlink" title="3. 然后解压缩 rpm2cpio novnc-0.5.1-2.el6.src.rpm |cpio -div, 解压出来会有3个文件 novnc-0.4-manpage.patch, novnc.spec， v0.5.1.tar.gz"></a>3. 然后解压缩 <code>rpm2cpio novnc-0.5.1-2.el6.src.rpm |cpio -div</code>, 解压出来会有3个文件 <code>novnc-0.4-manpage.patch</code>, <code>novnc.spec</code>， <code>v0.5.1.tar.gz</code></h5><h5 id="4-然后修改nova-spec-文件。-只需要修改Version为-0-6-2"><a href="#4-然后修改nova-spec-文件。-只需要修改Version为-0-6-2" class="headerlink" title="4. 然后修改nova.spec 文件。 只需要修改Version为 0.6.2,"></a>4. 然后修改nova.spec 文件。 只需要修改Version为 0.6.2,</h5><h5 id="5-然后开始build过程"><a href="#5-然后开始build过程" class="headerlink" title="5. 然后开始build过程"></a>5. 然后开始build过程</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">mkdir /root/rpmbuild</span><br><span class="line">cd /root/rpmbuild</span><br><span class="line"></span><br><span class="line">mkdir SOURCES SPECS BUILD RPMS SRPMS</span><br><span class="line">cd -</span><br><span class="line">cp nonvc.spec /root/rpmbuild/SPECS/</span><br><span class="line">cp novnc-0.4-manpage.patch  /root/rpmbuild/SOURCE/</span><br><span class="line">cp v0.6.2.tar.gz /root/rpmbuild/SOURCE/</span><br><span class="line">cd /root/rpmbuild/SPECS/</span><br><span class="line">rpmbuild  -bb novnc.spec</span><br></pre></td></tr></table></figure>
+<p>当然了，需要自己准备rpmbuild的安装环境<br><code>yum install gcc rpm-build pcre-devel</code></p>
+<h5 id="6-这个时候你在-root-rpmbuild-RPMS-noarch目录下就会发现最新的-novnc-0-6-2-2-el7-noarch-rpm"><a href="#6-这个时候你在-root-rpmbuild-RPMS-noarch目录下就会发现最新的-novnc-0-6-2-2-el7-noarch-rpm" class="headerlink" title="6. 这个时候你在/root/rpmbuild/RPMS/noarch目录下就会发现最新的 novnc-0.6.2-2.el7.noarch.rpm"></a>6. 这个时候你在/root/rpmbuild/RPMS/noarch目录下就会发现最新的 <code>novnc-0.6.2-2.el7.noarch.rpm</code></h5><h5 id="7-编完之后就是安装了，由于之前openstack环境已经安装了-0-5-1-版本-So我们需要的是update"><a href="#7-编完之后就是安装了，由于之前openstack环境已经安装了-0-5-1-版本-So我们需要的是update" class="headerlink" title="7. 编完之后就是安装了，由于之前openstack环境已经安装了 0.5.1 版本. So我们需要的是update"></a>7. 编完之后就是安装了，由于之前openstack环境已经安装了 <code>0.5.1</code> 版本. So我们需要的是update</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rpm -Uvh novnc-0.6.2-2.el7.noarch.rpm</span><br></pre></td></tr></table></figure>
+<p><span style="background-color: red;font-size:60px">到此结束</span></p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="https://mswang66.github.io/2018/01/16/cloudview应对修改admin密码/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="longsheng.wang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="鸣晟古姬de博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2018/01/16/cloudview应对修改admin密码/" itemprop="url">
+                  未命名
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-16T15:49:53+08:00">
+                2018-01-16
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="1-修改配置文件"><a href="#1-修改配置文件" class="headerlink" title="1. 修改配置文件"></a>1. 修改配置文件</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vi /etc/kolla/middleware/identity.json</span><br></pre></td></tr></table></figure>
+<p>替换<code>password</code>选项</p>
+<h1 id="2-重启服务"><a href="#2-重启服务" class="headerlink" title="2. 重启服务"></a>2. 重启服务</h1><pre><code>docker stop middleware
+docker start middleware
+</code></pre>
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="https://mswang66.github.io/2018/01/11/Ubuntu_16.04安装kubernetes/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="longsheng.wang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="鸣晟古姬de博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2018/01/11/Ubuntu_16.04安装kubernetes/" itemprop="url">
+                  Ubuntu 16.04 安装 kubernetes
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-11T14:37:28+08:00">
+                2018-01-11
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>#Ubuntu 16.04 安装 kubernetes</p>
+<h2 id="1-更新apt源"><a href="#1-更新apt源" class="headerlink" title="1. 更新apt源"></a>1. 更新apt源</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"># curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add</span><br><span class="line">OK</span><br><span class="line"></span><br><span class="line"># echo &quot;deb http://apt.kubernetes.io/ kubernetes-xenial main&quot; &gt; /etc/apt/sources.list.d/kubernetes.list</span><br><span class="line"></span><br><span class="line"># apt-get update</span><br></pre></td></tr></table></figure>
+<h2 id="2-安装docker"><a href="#2-安装docker" class="headerlink" title="2. 安装docker"></a>2. 安装docker</h2><p>手动安装方式： 打开 <a href="https://apt.dockerproject.org/repo/dists/ubuntu-xenial/main/filelist" target="_blank" rel="noopener">https://apt.dockerproject.org/repo/dists/ubuntu-xenial/main/filelist</a> 可以看到有docker的版本列表<br>下载需要的版本自行安装<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">/volumes/repos/apt/repo/pool/main/d/docker-engine/docker-engine_17.03.1~ce-0~ubuntu-xenial_amd64.deb</span><br><span class="line">/volumes/repos/apt/repo/pool/main/d/docker-engine/docker-engine_1.12.3-0~xenial_amd64.deb</span><br><span class="line">/volumes/repos/apt/repo/pool/main/d/docker-engine/docker-engine_17.03.0~ce-0~ubuntu-xenial_amd64.deb</span><br><span class="line">/volumes/repos/apt/repo/pool/main/d/docker-engine/docker-engine_1.12.0-0~xenial_amd64.deb</span><br><span class="line">/volumes/repos/apt/repo/pool/main/d/docker-engine/docker-engine_17.05.0~ce-0~ubuntu-xenial_armhf.deb</span><br><span class="line">/volumes/repos/apt/repo/pool/main/d/docker-engine/docker-engine_1.12.5-0~ubuntu-xenial_amd64.deb</span><br><span class="line">/volumes/repos/apt/repo/pool/main/d/docker-engine/docker-engine_1.13.1-0~ubuntu-xenial_armhf.deb</span><br><span class="line">/volumes/repos/apt/repo/pool/main/d/docker-engine/docker-engine_1.11.0-0~xenial_amd64.deb</span><br><span class="line">/volumes/repos/apt/repo/pool/main/d/docker-engine/docker-engine_1.11.1-0~xenial_amd64.deb</span><br><span class="line">/volumes/repos/apt/repo/pool/main/d/docker-engine/docker-engine_1.13.0-0~ubuntu-xenial_armhf.deb</span><br><span class="line">/volumes/repos/apt/repo/pool/main/d/docker-engine/docker-engine_1.12.2-0~xenial_amd64.deb</span><br><span class="line">/volumes/repos/apt/repo/pool/main/d/docker-engine/docker-engine_1.12.4-0~ubuntu-xenial_amd64.deb</span><br><span class="line">/volumes/repos/apt/repo/pool/main/d/docker-engine/docker-engine_17.05.0~ce-0~ubuntu-xenial_amd64.deb</span><br><span class="line">/volumes/repos/apt/repo/pool/main/d/docker-engine/docker-engine_1.12.6-0~ubuntu-xenial_amd64.deb</span><br><span class="line">/volumes/repos/apt/repo/pool/main/d/docker-engine/docker-engine_17.03.0~ce-0~ubuntu-xenial_armhf.deb</span><br><span class="line">/volumes/repos/apt/repo/pool/main/d/docker-engine/docker-engine_1.13.1-0~ubuntu-xenial_amd64.deb</span><br><span class="line">/volumes/repos/apt/repo/pool/main/d/docker-engine/docker-engine_1.11.2-0~xenial_amd64.deb</span><br><span class="line">/volumes/repos/apt/repo/pool/main/d/docker-engine/docker-engine_1.13.0-0~ubuntu-xenial_amd64.deb</span><br><span class="line">/volumes/repos/apt/repo/pool/main/d/docker-engine/docker-engine_17.04.0~ce-0~ubuntu-xenial_amd64.deb</span><br><span class="line">/volumes/repos/apt/repo/pool/main/d/docker-engine/docker-engine_1.12.1-0~xenial_amd64.deb</span><br><span class="line">/volumes/repos/apt/repo/pool/main/d/docker-engine/docker-engine_17.03.1~ce-0~ubuntu-xenial_armhf.deb</span><br><span class="line">/volumes/repos/apt/repo/pool/main/d/docker-engine/docker-engine_17.04.0~ce-0~ubuntu-xenial_armhf.deb</span><br></pre></td></tr></table></figure></p>
+<h2 id="3-安装kubernates基础组件"><a href="#3-安装kubernates基础组件" class="headerlink" title="3. 安装kubernates基础组件"></a>3. 安装kubernates基础组件</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">apt-get install -y kubelet kubeadm kubectl kubernetes-cni</span><br></pre></td></tr></table></figure>
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="https://mswang66.github.io/2018/01/10/kubernetes环境搭建之minikube/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -982,7 +1356,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">5</span>
+                <span class="site-state-item-count">8</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
