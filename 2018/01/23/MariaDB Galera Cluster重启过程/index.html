@@ -87,17 +87,17 @@
 
 
 
-<meta name="description" content="学习onos cord的知识储备 Part1.1. OLT Optional Line Terminal 光线路终端 2. ONF Optional Network Terminal 光网络终端 3. ONU Optional Network Unit 光网络单元 关系:局端设备（OLT）与多个用户端设备（ONU/ONT）之间通过无源的光缆、光分/合路器等组成的光分配网（ODN）连接的网络 区别:">
+<meta name="description" content="MariaDB Galera Cluster:Solution 1:1) I’ve changed safe_to_bootstrap parameter to 1 on one of the node in the file /var/lib/mysql/grastate.dat: safe_to_bootstrap: 1 2) After that I killed all mysql pro">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Onos cord 相关概念">
-<meta property="og:url" content="https://mswang66.github.io/2018/01/03/ONOS-cord-相关概念/index.html">
+<meta property="og:title" content="mariadb集群重启过程">
+<meta property="og:url" content="https://mswang66.github.io/2018/01/23/MariaDB Galera Cluster重启过程/index.html">
 <meta property="og:site_name" content="鸣晟古姬de博客">
-<meta property="og:description" content="学习onos cord的知识储备 Part1.1. OLT Optional Line Terminal 光线路终端 2. ONF Optional Network Terminal 光网络终端 3. ONU Optional Network Unit 光网络单元 关系:局端设备（OLT）与多个用户端设备（ONU/ONT）之间通过无源的光缆、光分/合路器等组成的光分配网（ODN）连接的网络 区别:">
+<meta property="og:description" content="MariaDB Galera Cluster:Solution 1:1) I’ve changed safe_to_bootstrap parameter to 1 on one of the node in the file /var/lib/mysql/grastate.dat: safe_to_bootstrap: 1 2) After that I killed all mysql pro">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-01-03T06:55:33.683Z">
+<meta property="og:updated_time" content="2018-02-02T09:20:47.779Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Onos cord 相关概念">
-<meta name="twitter:description" content="学习onos cord的知识储备 Part1.1. OLT Optional Line Terminal 光线路终端 2. ONF Optional Network Terminal 光网络终端 3. ONU Optional Network Unit 光网络单元 关系:局端设备（OLT）与多个用户端设备（ONU/ONT）之间通过无源的光缆、光分/合路器等组成的光分配网（ODN）连接的网络 区别:">
+<meta name="twitter:title" content="mariadb集群重启过程">
+<meta name="twitter:description" content="MariaDB Galera Cluster:Solution 1:1) I’ve changed safe_to_bootstrap parameter to 1 on one of the node in the file /var/lib/mysql/grastate.dat: safe_to_bootstrap: 1 2) After that I killed all mysql pro">
 
 
 
@@ -125,13 +125,13 @@
 
 
 
-  <link rel="canonical" href="https://mswang66.github.io/2018/01/03/ONOS-cord-相关概念/"/>
+  <link rel="canonical" href="https://mswang66.github.io/2018/01/23/MariaDB Galera Cluster重启过程/"/>
 
 
 
 
 
-  <title> Onos cord 相关概念 | 鸣晟古姬de博客 </title>
+  <title> mariadb集群重启过程 | 鸣晟古姬de博客 </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -282,7 +282,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="https://mswang66.github.io/2018/01/03/ONOS-cord-相关概念/">
+    <link itemprop="mainEntityOfPage" href="https://mswang66.github.io/2018/01/23/MariaDB Galera Cluster重启过程/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="longsheng.wang">
@@ -303,7 +303,7 @@
             
             
               
-                Onos cord 相关概念
+                mariadb集群重启过程
               
             
           </h1>
@@ -318,8 +318,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-03T14:35:48+08:00">
-                2018-01-03
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-23T11:28:05+08:00">
+                2018-01-23
               </time>
             
 
@@ -354,14 +354,31 @@
       
 
       
-        <p>学习onos cord的知识储备</p>
-<h1 id="Part1"><a href="#Part1" class="headerlink" title="Part1."></a>Part1.</h1><h3 id="1-OLT"><a href="#1-OLT" class="headerlink" title="1. OLT"></a>1. OLT</h3><p> Optional Line Terminal 光线路终端</p>
-<h3 id="2-ONF"><a href="#2-ONF" class="headerlink" title="2. ONF"></a>2. ONF</h3><p> Optional Network Terminal 光网络终端</p>
-<h3 id="3-ONU"><a href="#3-ONU" class="headerlink" title="3. ONU"></a>3. ONU</h3><p> Optional Network Unit 光网络单元</p>
-<h5 id="关系"><a href="#关系" class="headerlink" title="关系:"></a><strong>关系</strong>:</h5><p>局端设备（OLT）与多个用户端设备（ONU/ONT）之间通过无源的光缆、光分/合路器等组成的光分配网（ODN）连接的网络</p>
-<h5 id="区别"><a href="#区别" class="headerlink" title="区别:"></a><strong>区别</strong>:</h5><p>ONU和ONT都是用户端的设备，本质上没什么区别，但如果非得区分则可以从名称看出区别：ONT是光网络终端，应用于最终用户，而ONU是指光网络单元，它与最终用户之间可能还有其他网络</p>
-<h5 id="举例"><a href="#举例" class="headerlink" title="举例:"></a><strong>举例</strong>:</h5><p>比如在一个小区里面，ONT是直接放在用户家中的设备，而ONU可能就是放置在楼道中，各个用户通过交换机等设备连接至ONU。</p>
-<hr>
+        <h3 id="MariaDB-Galera-Cluster"><a href="#MariaDB-Galera-Cluster" class="headerlink" title="MariaDB Galera Cluster:"></a>MariaDB Galera Cluster:</h3><h5 id="Solution-1"><a href="#Solution-1" class="headerlink" title="Solution 1:"></a>Solution 1:</h5><p>1) I’ve changed safe_to_bootstrap parameter to 1 on one of the node in the file /var/lib/mysql/grastate.dat:</p>
+<p><code>safe_to_bootstrap: 1</code></p>
+<p>2) After that I killed all mysql processes:</p>
+<p><code>killall -KILL mysql mysqld_safe mysqld mysql-systemd</code></p>
+<p>3) And started a new cluster:</p>
+<p><code>galera_new_cluster</code></p>
+<p>4) All other nodes I reconnected to the new one:</p>
+<p><code>systemctl restart mariadb</code></p>
+<p>P.S. to install killall on CentOS use psmisc:</p>
+<p><code>sudo yum install psmisc</code></p>
+<h5 id="Solution-2"><a href="#Solution-2" class="headerlink" title="Solution 2:"></a>Solution 2:</h5><p>Another way to restart a MariaDB Galera Cluster is to use –wsrep-new-cluster parameter.</p>
+<p>1) Kill all mysql processes:</p>
+<p><code>killall -KILL mysql mysqld_safe mysqld mysql-systemd</code></p>
+<p>2) On the most up to date node start a new cluster:</p>
+<p><code>/etc/init.d/mysql start --wsrep-new-cluster</code></p>
+<p>3) Now other nodes can be connected:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">service mysql start --wsrep_cluster_address=&quot;gcomm://192.168.0.101,192.168.0.102,192.168.0.103&quot; \</span><br><span class="line">--wsrep_cluster_name=&quot;my_cluster&quot;</span><br></pre></td></tr></table></figure></p>
+<h3 id="Percona-XtraDB-Cluster"><a href="#Percona-XtraDB-Cluster" class="headerlink" title="Percona XtraDB Cluster:"></a>Percona XtraDB Cluster:</h3><h5 id="Solution-1-1"><a href="#Solution-1-1" class="headerlink" title="Solution 1:"></a>Solution 1:</h5><p>In case you can connect to the most up to date node then you can setup the node to bootstrap with the next SQL:</p>
+<p><code>SET GLOBAL wsrep_provider_options=&#39;pc.bootstrap=true&#39;;</code></p>
+<h5 id="Solution-2-1"><a href="#Solution-2-1" class="headerlink" title="Solution 2:"></a>Solution 2:</h5><p>In case if all your nodes are dead and can not be started, you can stop the old one cluster and run a new one. You must stop all the cluster nodes because they have an information about old nodes in the old cluster.</p>
+<p>1) Kill all the mysql processes on all nodes:</p>
+<p><code>killall -KILL mysql mysqld_safe mysqld mysql-systemd</code></p>
+<p>2) Start a new cluster on the most up to date node:</p>
+<p><code>systemctl start mysql@bootstrap.service</code></p>
+<p>3) Start other nodes:</p>
+<p><code>systemctl start mysql</code></p>
 
       
     </div>
@@ -392,8 +409,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/12/26/zookeeper之client连接/" rel="next" title="zookeeper之client连接">
-                <i class="fa fa-chevron-left"></i> zookeeper之client连接
+              <a href="/2018/01/18/openstack的vnc卡顿解决办法/" rel="next" title="Openstack的vnc卡顿办法">
+                <i class="fa fa-chevron-left"></i> Openstack的vnc卡顿办法
               </a>
             
           </div>
@@ -402,8 +419,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2018/01/04/kubernetes环境搭建(MAC)/" rel="prev" title="mac部署kubernetes">
-                mac部署kubernetes <i class="fa fa-chevron-right"></i>
+              <a href="/2018/02/02/zookeeper培训/" rel="prev" title="">
+                 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -515,7 +532,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Part1"><span class="nav-number">1.</span> <span class="nav-text">Part1.</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-OLT"><span class="nav-number">1.0.1.</span> <span class="nav-text">1. OLT</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-ONF"><span class="nav-number">1.0.2.</span> <span class="nav-text">2. ONF</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-ONU"><span class="nav-number">1.0.3.</span> <span class="nav-text">3. ONU</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#关系"><span class="nav-number">1.0.3.0.1.</span> <span class="nav-text">关系:</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#区别"><span class="nav-number">1.0.3.0.2.</span> <span class="nav-text">区别:</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#举例"><span class="nav-number">1.0.3.0.3.</span> <span class="nav-text">举例:</span></a></li></ol></li></ol></li></ol></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#MariaDB-Galera-Cluster"><span class="nav-number">1.</span> <span class="nav-text">MariaDB Galera Cluster:</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#Solution-1"><span class="nav-number">1.0.1.</span> <span class="nav-text">Solution 1:</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Solution-2"><span class="nav-number">1.0.2.</span> <span class="nav-text">Solution 2:</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Percona-XtraDB-Cluster"><span class="nav-number">2.</span> <span class="nav-text">Percona XtraDB Cluster:</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#Solution-1-1"><span class="nav-number">2.0.1.</span> <span class="nav-text">Solution 1:</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Solution-2-1"><span class="nav-number">2.0.2.</span> <span class="nav-text">Solution 2:</span></a></li></ol></li></ol></li></ol></div>
             
 
           </div>

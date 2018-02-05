@@ -87,17 +87,17 @@
 
 
 
-<meta name="description" content="学习onos cord的知识储备 Part1.1. OLT Optional Line Terminal 光线路终端 2. ONF Optional Network Terminal 光网络终端 3. ONU Optional Network Unit 光网络单元 关系:局端设备（OLT）与多个用户端设备（ONU/ONT）之间通过无源的光缆、光分/合路器等组成的光分配网（ODN）连接的网络 区别:">
+<meta name="description" content="kubertest kubernetes kubernetes.default kubernetes.default.svc kubernetes.default.svc.cluster.local [10.96.0.1 192.168.200.142] proxy_onexport no_proxy=20.0.0.0/24,20.0.0.1,20.0.0.130/24,kubertest,kub">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Onos cord 相关概念">
-<meta property="og:url" content="https://mswang66.github.io/2018/01/03/ONOS-cord-相关概念/index.html">
+<meta property="og:title" content="kubernetes部署使用到的命令合集">
+<meta property="og:url" content="https://mswang66.github.io/2018/01/12/kubernetes配置命令/index.html">
 <meta property="og:site_name" content="鸣晟古姬de博客">
-<meta property="og:description" content="学习onos cord的知识储备 Part1.1. OLT Optional Line Terminal 光线路终端 2. ONF Optional Network Terminal 光网络终端 3. ONU Optional Network Unit 光网络单元 关系:局端设备（OLT）与多个用户端设备（ONU/ONT）之间通过无源的光缆、光分/合路器等组成的光分配网（ODN）连接的网络 区别:">
+<meta property="og:description" content="kubertest kubernetes kubernetes.default kubernetes.default.svc kubernetes.default.svc.cluster.local [10.96.0.1 192.168.200.142] proxy_onexport no_proxy=20.0.0.0/24,20.0.0.1,20.0.0.130/24,kubertest,kub">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-01-03T06:55:33.683Z">
+<meta property="og:updated_time" content="2018-02-02T09:20:31.098Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Onos cord 相关概念">
-<meta name="twitter:description" content="学习onos cord的知识储备 Part1.1. OLT Optional Line Terminal 光线路终端 2. ONF Optional Network Terminal 光网络终端 3. ONU Optional Network Unit 光网络单元 关系:局端设备（OLT）与多个用户端设备（ONU/ONT）之间通过无源的光缆、光分/合路器等组成的光分配网（ODN）连接的网络 区别:">
+<meta name="twitter:title" content="kubernetes部署使用到的命令合集">
+<meta name="twitter:description" content="kubertest kubernetes kubernetes.default kubernetes.default.svc kubernetes.default.svc.cluster.local [10.96.0.1 192.168.200.142] proxy_onexport no_proxy=20.0.0.0/24,20.0.0.1,20.0.0.130/24,kubertest,kub">
 
 
 
@@ -125,13 +125,13 @@
 
 
 
-  <link rel="canonical" href="https://mswang66.github.io/2018/01/03/ONOS-cord-相关概念/"/>
+  <link rel="canonical" href="https://mswang66.github.io/2018/01/12/kubernetes配置命令/"/>
 
 
 
 
 
-  <title> Onos cord 相关概念 | 鸣晟古姬de博客 </title>
+  <title> kubernetes部署使用到的命令合集 | 鸣晟古姬de博客 </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -282,7 +282,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="https://mswang66.github.io/2018/01/03/ONOS-cord-相关概念/">
+    <link itemprop="mainEntityOfPage" href="https://mswang66.github.io/2018/01/12/kubernetes配置命令/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="longsheng.wang">
@@ -303,7 +303,7 @@
             
             
               
-                Onos cord 相关概念
+                kubernetes部署使用到的命令合集
               
             
           </h1>
@@ -318,8 +318,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-03T14:35:48+08:00">
-                2018-01-03
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-12T10:18:01+08:00">
+                2018-01-12
               </time>
             
 
@@ -354,14 +354,46 @@
       
 
       
-        <p>学习onos cord的知识储备</p>
-<h1 id="Part1"><a href="#Part1" class="headerlink" title="Part1."></a>Part1.</h1><h3 id="1-OLT"><a href="#1-OLT" class="headerlink" title="1. OLT"></a>1. OLT</h3><p> Optional Line Terminal 光线路终端</p>
-<h3 id="2-ONF"><a href="#2-ONF" class="headerlink" title="2. ONF"></a>2. ONF</h3><p> Optional Network Terminal 光网络终端</p>
-<h3 id="3-ONU"><a href="#3-ONU" class="headerlink" title="3. ONU"></a>3. ONU</h3><p> Optional Network Unit 光网络单元</p>
-<h5 id="关系"><a href="#关系" class="headerlink" title="关系:"></a><strong>关系</strong>:</h5><p>局端设备（OLT）与多个用户端设备（ONU/ONT）之间通过无源的光缆、光分/合路器等组成的光分配网（ODN）连接的网络</p>
-<h5 id="区别"><a href="#区别" class="headerlink" title="区别:"></a><strong>区别</strong>:</h5><p>ONU和ONT都是用户端的设备，本质上没什么区别，但如果非得区分则可以从名称看出区别：ONT是光网络终端，应用于最终用户，而ONU是指光网络单元，它与最终用户之间可能还有其他网络</p>
-<h5 id="举例"><a href="#举例" class="headerlink" title="举例:"></a><strong>举例</strong>:</h5><p>比如在一个小区里面，ONT是直接放在用户家中的设备，而ONU可能就是放置在楼道中，各个用户通过交换机等设备连接至ONU。</p>
+        <p>kubertest kubernetes kubernetes.default kubernetes.default.svc kubernetes.default.svc.cluster.local</p>
+<p>[10.96.0.1 192.168.200.142]</p>
+<p>proxy_on<br>export no_proxy=20.0.0.0/24,20.0.0.1,20.0.0.130/24,kubertest,kubernetes,kubernetes.default,kubernetes.default.svc,kubernetes.default.svc.cluster.local,localhost,127.0.0.0/8,10.0.0.0/24</p>
+<p>no_proxy=20.0.0.0/24,20.0.0.133,20.0.0.130/24,k8server,kubernetes,kubernetes.default,kubernetes.default.svc,kubernetes.default.svc.cluster.local,localhost,127.0.0.0/8,10.0.0.0/24,k8server,10.0.0.134,10.0.0.2,10.0.0.10,200.0.0.0/24</p>
+<p>swapoff -a</p>
+<p>sudo kubeadm init –pod-network-cidr=10.1.0.0/16 –service-cidr=10.3.3.0/24</p>
+<p>kubeadm init –pod-network-cidr=20.0.0.0/24 –service-cidr=10.0.0.0/24 –kubernetes-version v1.9.1</p>
+<p>–system-cgroups cgroupfs  –cgroup-root /</p>
+<p>curl -L <a href="https://raw.githubusercontent.com/projectcalico/canal/master/k8s-install/1.6/canal.yaml" target="_blank" rel="noopener">https://raw.githubusercontent.com/projectcalico/canal/master/k8s-install/1.6/canal.yaml</a> -o canal.yaml<br>sed -i “s@10.244.0.0/16@10.1.0.0/16@” canal.yaml<br>kubectl taint nodes –all=true  node-role.kubernetes.io/master:NoSchedule-</p>
 <hr>
+<p>/usr/bin/dockerd -H fd:// $DOCKER_OPTS</p>
+<p>/etc/docker/daemon.json<br>{<br>  “exec-opts”: [“native.cgroupdriver=systemd”]</p>
+<h2 id=""><a href="#" class="headerlink" title="}"></a>}</h2><p>kubeadm init \<br>  –kubernetes-version=v1.8.0 \<br>  –pod-network-cidr=20.0.0.0/24 \<br>  –apiserver-advertise-address=192.168.200.142</p>
+<p>Environment=”KUBELET_EXTRA_ARGS=–fail-swap-on=false”</p>
+<p>关闭了局域网里面的dhcp服务</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">IPADDR=20.0.0.133</span><br><span class="line">PREFIX=24</span><br><span class="line">BOOTPROTO=static</span><br></pre></td></tr></table></figure>
+<p>yum install vim</p>
+<p>systemctl disable firewalld<br>systemctl stop firewalld<br>setenforce 0</p>
+<p>sudo sed -i ‘s/10.96.0.10/10.0.0.134/g’ /etc/systemd/system/kubelet.service.d/10-kubeadm.conf</p>
+<p>kubeadm init –pod-network-cidr=20.0.0.0/24 –service-cidr=10.0.0.0/24   –bootstrap-auth-token</p>
+<h2 id="certificate-manager-go-314-Failed-while-requesting-a-signed-certificate-from-the-master-cannot-create-certificate-signing-request-Post"><a href="#certificate-manager-go-314-Failed-while-requesting-a-signed-certificate-from-the-master-cannot-create-certificate-signing-request-Post" class="headerlink" title="certificate_manager.go:314] Failed while requesting a signed certificate from the master: cannot create certificate signing request: Post"></a>certificate_manager.go:314] Failed while requesting a signed certificate from the master: cannot create certificate signing request: Post</h2><p>root@k8server ~]# kubeadm init<br>[init] Using Kubernetes version: v1.9.1<br>[init] Using Authorization modes: [Node RBAC]<br>[preflight] Running pre-flight checks.<br>    [WARNING Hostname]: hostname “k8server” could not be reached<br>    [WARNING Hostname]: hostname “k8server” lookup k8server on 8.8.8.8:53: no such host<br>    [WARNING FileExisting-crictl]: crictl not found in system path<br>[preflight] Starting the kubelet service<br>[certificates] Generated ca certificate and key.<br>[certificates] Generated apiserver certificate and key.<br>[certificates] apiserver serving cert is signed for DNS names [k8server kubernetes kubernetes.default kubernetes.default.svc kubernetes.default.svc.cluster.local] and IPs [10.96.0.1 10.0.0.134]<br>[certificates] Generated apiserver-kubelet-client certificate and key.<br>[certificates] Generated sa key and public key.<br>[certificates] Generated front-proxy-ca certificate and key.<br>[certificates] Generated front-proxy-client certificate and key.<br>[certificates] Valid certificates and keys now exist in “/etc/kubernetes/pki”<br>[kubeconfig] Wrote KubeConfig file to disk: “admin.conf”<br>[kubeconfig] Wrote KubeConfig file to disk: “kubelet.conf”<br>[kubeconfig] Wrote KubeConfig file to disk: “controller-manager.conf”<br>[kubeconfig] Wrote KubeConfig file to disk: “scheduler.conf”<br>[controlplane] Wrote Static Pod manifest for component kube-apiserver to “/etc/kubernetes/manifests/kube-apiserver.yaml”<br>[controlplane] Wrote Static Pod manifest for component kube-controller-manager to “/etc/kubernetes/manifests/kube-controller-manager.yaml”<br>[controlplane] Wrote Static Pod manifest for component kube-scheduler to “/etc/kubernetes/manifests/kube-scheduler.yaml”<br>[etcd] Wrote Static Pod manifest for a local etcd instance to “/etc/kubernetes/manifests/etcd.yaml”<br>[init] Waiting for the kubelet to boot up the control plane as Static Pods from directory “/etc/kubernetes/manifests”.<br>[init] This might take a minute or longer if the control plane images have to be pulled.<br>[apiclient] All control plane components are healthy after 29.003333 seconds<br>[uploadconfig] Storing the configuration used in ConfigMap “kubeadm-config” in the “kube-system” Namespace<br>[markmaster] Will mark node k8server as master by adding a label and a taint<br>[markmaster] Master k8server tainted and labelled with key/value: node-role.kubernetes.io/master=””<br>[bootstraptoken] Using token: e3c0bf.09aed4130878a8ca<br>[bootstraptoken] Configured RBAC rules to allow Node Bootstrap tokens to post CSRs in order for nodes to get long term certificate credentials<br>[bootstraptoken] Configured RBAC rules to allow the csrapprover controller automatically approve CSRs from a Node Bootstrap Token<br>[bootstraptoken] Configured RBAC rules to allow certificate rotation for all node client certificates in the cluster<br>[bootstraptoken] Creating the “cluster-info” ConfigMap in the “kube-public” namespace<br>[addons] Applied essential addon: kube-dns<br>[addons] Applied essential addon: kube-proxy</p>
+<p>Your Kubernetes master has initialized successfully!</p>
+<p>To start using your cluster, you need to run the following as a regular user:</p>
+<p>  mkdir -p $HOME/.kube<br>  sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config<br>  sudo chown $(id -u):$(id -g) $HOME/.kube/config</p>
+<p>You should now deploy a pod network to the cluster.<br>Run “kubectl apply -f [podnetwork].yaml” with one of the options listed at:<br>  <a href="https://kubernetes.io/docs/concepts/cluster-administration/addons/" target="_blank" rel="noopener">https://kubernetes.io/docs/concepts/cluster-administration/addons/</a></p>
+<p>You can now join any number of machines by running the following on each node<br>as root:</p>
+<p>  kubeadm join –token e3c0bf.09aed4130878a8ca 10.0.0.134:6443 –discovery-token-ca-cert-hash sha256:53a22e0803f564192dca5de4898fdadc7d9b9734fd43262bfab7d137fc848d02</p>
+<hr>
+<p>kubectl patch -f &lt;(cat &lt;&lt;EOF<br>apiVersion: rbac.authorization.k8s.io/v1alpha1<br>kind: ClusterRoleBinding<br>metadata:<br>  name: cluster-admin<br>roleRef:<br>  apiGroup: rbac.authorization.k8s.io<br>  kind: ClusterRole<br>  name: cluster-admin<br>subjects:</p>
+<ul>
+<li>kind: Group<br>name: system:masters</li>
+<li>kind: Group<br>name: system:authenticated</li>
+<li>kind: Group<br>name: system:unauthenticated<br>EOF<br>)</li>
+</ul>
+<p>可能遇到的问题：</p>
+<ol>
+<li>[preflight] Some fatal errors occurred:<br> /proc/sys/net/bridge/bridge-nf-call-iptables contents are not set to 1<br>解决方案：<pre><code>echo 1 &gt; /proc/sys/net/bridge/bridge-nf-call-iptables
+echo 1 &gt; /proc/sys/net/bridge/bridge-nf-call-ip6tables
+</code></pre></li>
+</ol>
 
       
     </div>
@@ -392,8 +424,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/12/26/zookeeper之client连接/" rel="next" title="zookeeper之client连接">
-                <i class="fa fa-chevron-left"></i> zookeeper之client连接
+              <a href="/2018/01/11/Ubuntu_16.04安装kubernetes/" rel="next" title="Ubuntu 16.04 安装 kubernetes">
+                <i class="fa fa-chevron-left"></i> Ubuntu 16.04 安装 kubernetes
               </a>
             
           </div>
@@ -402,8 +434,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2018/01/04/kubernetes环境搭建(MAC)/" rel="prev" title="mac部署kubernetes">
-                mac部署kubernetes <i class="fa fa-chevron-right"></i>
+              <a href="/2018/01/16/cloudview应对修改admin密码/" rel="prev" title="cloudview修改密码">
+                cloudview修改密码 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -515,7 +547,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Part1"><span class="nav-number">1.</span> <span class="nav-text">Part1.</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-OLT"><span class="nav-number">1.0.1.</span> <span class="nav-text">1. OLT</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-ONF"><span class="nav-number">1.0.2.</span> <span class="nav-text">2. ONF</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-ONU"><span class="nav-number">1.0.3.</span> <span class="nav-text">3. ONU</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#关系"><span class="nav-number">1.0.3.0.1.</span> <span class="nav-text">关系:</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#区别"><span class="nav-number">1.0.3.0.2.</span> <span class="nav-text">区别:</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#举例"><span class="nav-number">1.0.3.0.3.</span> <span class="nav-text">举例:</span></a></li></ol></li></ol></li></ol></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#"><span class="nav-number">1.</span> <span class="nav-text">}</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#certificate-manager-go-314-Failed-while-requesting-a-signed-certificate-from-the-master-cannot-create-certificate-signing-request-Post"><span class="nav-number">2.</span> <span class="nav-text">certificate_manager.go:314] Failed while requesting a signed certificate from the master: cannot create certificate signing request: Post</span></a></li></ol></div>
             
 
           </div>

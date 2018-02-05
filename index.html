@@ -283,6 +283,511 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="https://mswang66.github.io/2018/02/02/mariadb集群zookeeper管理逻辑/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="longsheng.wang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="鸣晟古姬de博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2018/02/02/mariadb集群zookeeper管理逻辑/" itemprop="url">
+                  mariadb集群zookeeper管理逻辑
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-02-02T17:15:35+08:00">
+                2018-02-02
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="启动之前逻辑"><a href="#启动之前逻辑" class="headerlink" title="启动之前逻辑"></a>启动之前逻辑</h1><ol>
+<li>先获取锁</li>
+<li>判断当前是否有服务在线</li>
+<li><p>如果有服务在线，则直接 slave 形式启动，并在启动结束之后放弃锁</p>
+</li>
+<li><p>如果没有服务在线,<br>3.1. 查看本地seq<br>3.2. 如果seq &gt; 0</p>
+<pre><code>master形式 启动
+放弃锁
+</code></pre><p>3.3. 如果seq = -1</p>
+<pre><code>3.3.1 查看Zookeeper上是否存在last
+3.3.2 如果不存在 
+      直接启动 master形式
+3.3.3 如果存在(可能是多个)
+      判断是否属于这2个
+      如果是，则master启动
+      如果不是， 则放弃锁，并重新获取申请锁
+</code></pre></li>
+</ol>
+<h1 id="启动逻辑"><a href="#启动逻辑" class="headerlink" title="启动逻辑"></a>启动逻辑</h1><ol>
+<li>run command</li>
+<li>监控服务是否正常<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">如果服务启动失败，那我们就撤，返回error，告诉kolla start</span><br><span class="line">如果正常启动， </span><br><span class="line">   首先第一件事情，向上注册一个临时节点(用作服务发现)，并且向上注册一个永久节点(用作重启是判断最后一个启动的服务)</span><br><span class="line">   然后监听其他两个节点的临时节点</span><br><span class="line"></span><br><span class="line">      临时节点监听逻辑：</span><br><span class="line">          获取锁(防止重启太快导致)</span><br><span class="line">          </span><br><span class="line">          判断临时节点是否存在，如果存在，do nothing </span><br><span class="line">          如果不存在了，删除对应的永久节点 </span><br><span class="line"></span><br><span class="line">          放弃锁</span><br><span class="line">          说明：可能多个客户端同时获取到删除逻辑，所以需要在获取到锁之后，再去判断一下该节点是否存在</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h1 id="突然挂了"><a href="#突然挂了" class="headerlink" title="突然挂了"></a>突然挂了</h1><h4 id="一、mysql挂了，容器没挂"><a href="#一、mysql挂了，容器没挂" class="headerlink" title="一、mysql挂了，容器没挂"></a>一、mysql挂了，容器没挂</h4><ol>
+<li>删除本地对应的临时节点 (不用手动删除，zk close即可)</li>
+<li>删除本地对应的永久节点<br>这里需要判断当前节点是否是最后一个节点，如果是，则不删除本地的永久节点</li>
+</ol>
+<h4 id="二、整个容器挂了"><a href="#二、整个容器挂了" class="headerlink" title="二、整个容器挂了"></a>二、整个容器挂了</h4><p>do nothing</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="https://mswang66.github.io/2018/02/02/zookeeper培训/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="longsheng.wang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="鸣晟古姬de博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2018/02/02/zookeeper培训/" itemprop="url">
+                  未命名
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-02-02T15:47:46+08:00">
+                2018-02-02
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="zookeeper培训"><a href="#zookeeper培训" class="headerlink" title="zookeeper培训"></a>zookeeper培训</h1><p>培训内容如下</p>
+<ul>
+<li>基本概念</li>
+<li>zookeeper选举master流程</li>
+<li>zookeeper的master和slave心跳方式</li>
+<li>zookeeper如何保证数据一致性</li>
+<li>zookeeper使用场景</li>
+<li>如何使用zookeeper</li>
+</ul>
+<h2 id="1-基本概念"><a href="#1-基本概念" class="headerlink" title="1.基本概念"></a>1.基本概念</h2><h4 id="1-1-Zookeeper特点："><a href="#1-1-Zookeeper特点：" class="headerlink" title="1.1. Zookeeper特点："></a>1.1. Zookeeper特点：</h4><ul>
+<li>最终一致性：为客户端展示同一个视图，这是zookeeper里面一个非常重要的功能</li>
+<li>可靠性：如果消息被到一台服务器接受，那么它将被所有的服务器接受。</li>
+<li>实时性：Zookeeper不能保证两个客户端能同时得到刚更新的数据，如果需要最新数据，应该在读数据之前调用sync()接口。</li>
+<li>独立性 ：各个Client之间互不干预</li>
+<li>原子性 ：更新只能成功或者失败，没有中间状态。</li>
+</ul>
+<h4 id="1-2-Zookeeper中的角色"><a href="#1-2-Zookeeper中的角色" class="headerlink" title="1.2. Zookeeper中的角色"></a>1.2. Zookeeper中的角色</h4><ul>
+<li>领导者(Leader)：领导者负责进行投票的发起和决议，更新系统状态，处理写请求</li>
+<li>跟随者(Follwer)：Follower用于接收客户端的读写请求并向客户端返回结果，在选主过程中参与投票</li>
+<li><p>观察者（Observer）：观察者可以接收客户端的读写请求，并将写请求转发给Leader，但Observer节点不参与投票过程，只同步leader状态，Observer的目的是为了，扩展系统，提高读取速度。<br>  在3.3.0版本之后，引入Observer角色的原因：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Zookeeper需保证高可用和强一致性；</span><br><span class="line">为了支持更多的客户端，需要增加更多Server；</span><br><span class="line">Server增多，投票阶段延迟增大，影响性能；</span><br><span class="line">权衡伸缩性和高吞吐率，引入Observer ；</span><br><span class="line">Observer不参与投票；</span><br><span class="line">Observers接受客户端的连接，并将写请求转发给leader节点；</span><br><span class="line">加入更多Observer节点，提高伸缩性，同时不影响吞吐率。</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>客户端(Client)： 执行读写请求的发起方</p>
+</li>
+</ul>
+<h4 id="1-3-节点类型"><a href="#1-3-节点类型" class="headerlink" title="1.3. 节点类型"></a>1.3. 节点类型</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">PERSISTENT：永久节点</span><br><span class="line">EPHEMERAL：临时节点</span><br><span class="line">PERSISTENT_SEQUENTIAL：永久节点、序列化</span><br><span class="line">EPHEMERAL_SEQUENTIAL：临时节点、序列化</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>说明： 临时节点是跟client绑定的，client断开连接，则临时节点会自动被清除</p>
+</blockquote>
+<h4 id="1-4-回调方式"><a href="#1-4-回调方式" class="headerlink" title="1.4. 回调方式"></a>1.4. 回调方式</h4><h6 id="1-4-1-Watcher"><a href="#1-4-1-Watcher" class="headerlink" title="1.4.1. Watcher"></a>1.4.1. Watcher</h6><p>Watcher是用于监听节点，session 状态的，比如getData对数据节点a设置了watcher，那么当a的数据内容发生改变时，客户端会收到NodeDataChanged通知，然后进行watcher的回调。</p>
+<h6 id="1-4-2-AsyncCallback"><a href="#1-4-2-AsyncCallback" class="headerlink" title="1.4.2. AsyncCallback"></a>1.4.2. AsyncCallback</h6><p>AsyncCallback是在以异步方式使用 ZooKeeper API 时，用于处理返回结果的。</p>
+<blockquote>
+<p>例如：getData同步调用的版本是：byte[] getData(String path, boolean watch,Stat stat)，异步调用的版本是：void getData(String path,Watcher watcher,AsyncCallback.DataCallback cb,Object ctx)，可以看到，前者是直接返回获取的结果，后者是通过AsyncCallback回调处理结果的。</p>
+</blockquote>
+<h2 id="2-选举流程"><a href="#2-选举流程" class="headerlink" title="2.选举流程"></a>2.选举流程</h2><h4 id="2-1-选举流程如下"><a href="#2-1-选举流程如下" class="headerlink" title="2.1. 选举流程如下"></a>2.1. 选举流程如下</h4><p><strong>1. 每个Server发出一个投票。由于是初始情况，Server1和Server2都会将自己作为Leader服务器来进行投票，每次投票会包含所推举的服务器的myid和ZXID，使用(myid, ZXID)来表示，此时Server1的投票为(1, 0)，Server2的投票为(2, 0)，然后各自将这个投票发给集群中其他机器。</strong></p>
+<p><strong>2. 接受来自各个服务器的投票。集群的每个服务器收到投票后，首先判断该投票的有效性，如检查是否是本轮投票、是否来自LOOKING状态的服务器。</strong></p>
+<p><strong>3. 处理投票。针对每一个投票，服务器都需要将别人的投票和自己的投票进行PK，PK规则如下</strong></p>
+<ul>
+<li>优先检查ZXID。ZXID比较大的服务器优先作为Leader。</li>
+<li>如果ZXID相同，那么就比较myid。myid较大的服务器作为Leader服务器。</li>
+</ul>
+<p>　　对于Server1而言，它的投票是(1, 0)，接收Server2的投票为(2, 0)，首先会比较两者的ZXID，均为0，再比较myid，此时Server2的myid最大，于是更新自己的投票为(2, 0)，然后重新投票，对于Server2而言，其无须更新自己的投票，只是再次向集群中所有机器发出上一次投票信息即可。</p>
+<p><strong>4. 统计投票。每次投票后，服务器都会统计投票信息，判断是否已经有过半机器接受到相同的投票信息，对于Server1、Server2而言，都统计出集群中已经有两台机器接受了(2, 0)的投票信息，此时便认为已经选出了Leader。</strong></p>
+<p><strong>5. 改变服务器状态。一旦确定了Leader，每个服务器就会更新自己的状态，如果是Follower，那么就变更为FOLLOWING，如果是Leader，就变更为LEADING。</strong></p>
+<h4 id="2-2-流程源码解析"><a href="#2-2-流程源码解析" class="headerlink" title="2.2. 流程源码解析"></a>2.2. 流程源码解析</h4><p>选举算法主要在<code>QuorumPeer</code>类中的<code>run</code>方法中。主要的逻辑是选主这一块(也就是从looking状态开始)<br>如下是代码中的大体流程</p>
+<p>1.判断是否停止了选举</p>
+<p>2.如果停止了选举，则新建一个选举算法</p>
+<p>3.选举算法(默认算法就是快速选举也就是<code>FastLeaderElection</code>类)开始寻找master</p>
+<p>4.群发notification，然后开始等待外接的消息，<br> 收到消息如果是lookup则从<code>5</code>开始执行，<br> 收到的消息如果是leading状态则从<code>13</code>开始</p>
+<p>5.(5)判断收到的消息中的vote和本地的vote的选举轮次</p>
+<p>6.如果本地的轮次高，则不做任何处理。如果本地的选举轮次低，则更新本地的选举轮次，并且重发上面的notification，因为上一次发送的数据不会被其他的节点处理</p>
+<p>7.如果选举轮次一致，则判断节点的优先级，如果本地优先级低，则会吧本地选举的对象改为收到的vote(每个节点默认选举自己)，因为vote的内容改变了，所以会重发notification给其他节点</p>
+<p>8.将新来的节点放到本地的一个选举的list中</p>
+<p>9.判断最新的本地的vote在选举list中是否达到了一半以上（本地的vote不一定是自己）</p>
+<p>10.如果达到了一半以上，先把本地还没处理的vote接收过来，跟当前的vote判断</p>
+<p>11.如果后面处理的数据都没有当前的大(也就是n是等于null才推出while循环的)， 则更新到当前的状态，如果最大值是本地，则设置leading否则是learning(follower)</p>
+<p>12.返回到QuorumPeer的循环中，然后就简单了，根据状态知道是启动leader还是follower。有一种可能是本地选举的跟别人不一致，则会在启动具体角色的时候连接超时。然后就会抛出异常，然后把本地的状态重新设置成lookup</p>
+<p>13.(13)判断轮次是否一致，是的话，加入到本地的选举list。</p>
+<p>14.判断是否有一半的vote是当前过来的leading，如果有，则设置状态完就直接返回</p>
+<p>15.如果轮次不一致，加入到另一个专门用来存放leading的vote list(这个list主要用来处理新的节点加入到正常的状态中,已经结束选举的集群中节点在Messenger中，该类也在FastLeaderElection中)</p>
+<p>16.判断这个list中的是否有一半以上的vote，有就直接确定状态，否则continue again</p>
+<h2 id="3-leader和follower如何保持心跳"><a href="#3-leader和follower如何保持心跳" class="headerlink" title="3.leader和follower如何保持心跳"></a>3.leader和follower如何保持心跳</h2><p>master发送<code>ping</code>包</p>
+<p>详细可以见源码，在相应的leader和follower启动代码最后都有个while循环</p>
+<h2 id="4-zookeeper如何保证数据一致性"><a href="#4-zookeeper如何保证数据一致性" class="headerlink" title="4.zookeeper如何保证数据一致性"></a>4.zookeeper如何保证数据一致性</h2><blockquote>
+<p>主要的原则是写只能由leader来发起，读可以在所有节点执行</p>
+</blockquote>
+<ul>
+<li>客户端连接到集群中某一个节点</li>
+<li>客户端发送写请求</li>
+<li>服务端连接节点，把该写请求转发给leader</li>
+<li>leader处理写请求，一半以上的从节点也写成功，返回给客户端成功。</li>
+</ul>
+<h4 id="4-1-还有需要注意的是zookeeper对数据大小有严格要求"><a href="#4-1-还有需要注意的是zookeeper对数据大小有严格要求" class="headerlink" title="4.1. 还有需要注意的是zookeeper对数据大小有严格要求"></a>4.1. 还有需要注意的是zookeeper对数据大小有严格要求</h4><p>ZooKeeper是一套高吞吐量的系统，为了提高系统的读取速度，ZooKeeper不允许从文件中读取需要的数据，而是直接从内存中查找。 </p>
+<p>换句话说，ZooKeeper集群中每一台服务器都包含全量的数据，并且这些数据都会加载到内存中。同时ZNode的数据并支持Append操作，全部都是Replace。</p>
+<p>所以从上面分析可以看出，如果ZNode的过大，那么读写某一个ZNode将造成不确定的延时;同时ZNode过大，将过快地耗尽ZooKeeper服务器的内存。这也是为什么ZooKeeper不适合存储大量的数据的原因。 </p>
+<h2 id="5-zookeeper的使用场景"><a href="#5-zookeeper的使用场景" class="headerlink" title="5.zookeeper的使用场景"></a>5.zookeeper的使用场景</h2><h4 id="5-1-Barrier"><a href="#5-1-Barrier" class="headerlink" title="5.1. Barrier"></a>5.1. Barrier</h4><p>　　Barrier屏障是分布式系统中常用的用于阻塞所有执行在某个执行点目的，直到某个条件被满足后再让所有的节点继续执行，ZooKeeper实现屏障的步骤是：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">　　a. 创建/zk_barrier节点，当这个znode存在的时候表示barrier生效；</span><br><span class="line">　　b. 所有客户端调用exist()接口向/zk_barrier注册watch event；</span><br><span class="line">　　c. 如果exists()返回true则表示barrier生效，此时客户端阻塞等待notification；</span><br><span class="line">　　d. 负责/zk_barrier的节点检查直到某个条件满足后，删除/zk_barrier;</span><br><span class="line">　　e. 上面的删除操作会触发watch event，此时所有阻塞在此的客户端都接收到notification，他们再次调用exists()都返回false，表明barrier已经被消除，则所有客户端开始执行。</span><br></pre></td></tr></table></figure></p>
+<p>　　根据上面的原理，还可以轻松的实现double-barrier，可以用于控制计算的开始、退出时间点，原理是当指定数目的线程加入到barrier中时允许计算开始执行，而当所有的计算节点计算完成退出后，整个计算过程被标示为结束状态。其过程可以描述为：</p>
+<p>　　Phase 1<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">　　a. 假设/barrier节点为目的点，每一个客户端处理进程都会在/barrier目录下创建ephemeral节点，而通常客户端会用自己的主机名标识自己这个临时节点；同时，客户端还需要设置/ready节点的watch event监听；</span><br><span class="line">　　b. N是预先知晓的客户端处理进程数目最小阈值，每当一个客户端进程加入之后，都调用M = getChildren(/barrier, watch=false)检查子节点的数目；</span><br><span class="line">　　c. 当M &gt;= N的时候，该加入的客户端处理进程负责创建/ready节点；</span><br><span class="line">　　d. 上面的创建操作会触发所有其他客户端开始计算操作；</span><br></pre></td></tr></table></figure></p>
+<p>　　Phase 2<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">　　a. 当客户端进程计算结束之后，都删除当时自己创建的临时节点；</span><br><span class="line">　　b. 然后客户端进程调用M = getChildren(/barrier, watch=true)，当M !=0 时候继续等待，而当M == 0时候，则大家就可以全部退出barrier了。</span><br><span class="line">　　上面实现的不理想之处是存在惊群(herd effect)效应，改进的方式是创建临时节点时候采用sequential ephemeral节点，而在最后退出的时候，每个客户端进程只对临近于自己较小的顺序节点添加watch event即可。</span><br></pre></td></tr></table></figure></p>
+<h4 id="5-2-Queue"><a href="#5-2-Queue" class="headerlink" title="5.2. Queue"></a>5.2. Queue</h4><p>　　Queue作为联系生产者和消费最常用纽带，在分布式系统中也经常会被使用。通常而言生产者在某个节点下创建子节点以表示为“生产”行为，而消费者删除子节点表示“消费”过程，当然常常任务队列还需要FIFO的顺序特性，此时创建的子节点可以则可以是sequential顺序节点。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">　　a. 创建/QUEUE表示任务队列；</span><br><span class="line">　　b. 生产者通过创建顺序子节点表示产生消息，其调用为create(“queue-“, SEQUENTIAL_EPHEMERAL)，其产生的消息形如queue-N；</span><br><span class="line">　　c. 消费者通过调用 M = getChildren(/QUEUE, watch=true)，该调用会返回一个子节点列表，通过排序字节点列表并从中选出序列号最小的子节点出来，消费者可以删除掉这个字节点表示已经消费之；</span><br><span class="line">　　d. 消费者一直等到M中的子节点消费完后，再调用一次getChildren()调用，以查看是否有新的子节点被添加进来。</span><br></pre></td></tr></table></figure></p>
+<p>　　上面的操作在删除子节点的时候可能会有问题，就是在其他客户端获取该自己点访问的时候，此时删除之会返回失败，客户端则需要重新尝试删除之(这么看来无法保证节点只被一个消费者消费啊)。queue实现的例子可以从recipes中查看官方样例。基于上面的例子，实现PriorityQueue也很简单，需要创建的队列名字是”queue-YY”即可，其中YY用于标示队列的优先级。</p>
+<h4 id="5-3-Lock"><a href="#5-3-Lock" class="headerlink" title="5.3. Lock"></a>5.3. Lock</h4><p>分布式锁是分布式系统中用于同步访问共享资源的重要原语，分布式锁要求多个客户端不会同时持有该锁资源，以实现某一时刻只有一个客户端可以对指定的资源进行访问操作，比如写共享的文件、数据库。<br></p>
+<p>　　为了创建分布式锁，首先需要创建一个持久节点作为锁节点，客户端如果需要这个锁就必须在其下创建临时序列ephemeral-sequential节点，然后我们约定拥有最小序列号的节点拥有该锁，而当客户端释放锁的时候，只需要删除自己这个临时节点就可以了，其请求锁过程可以表述如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">　　a. 创建锁节点/locknode，客户端获取锁的时候创建顺序临时节点create(“/locknode/lock-“, CreateMode=EPHEMERAL_SEQUENTIAL)；</span><br><span class="line">　　b. 检查锁节点的所有子节点getChildren(“/locknode/lock-“, watch=false)，这里设置watch event为false是为了避免惊群效应；</span><br><span class="line">　　c. 如果在步骤a中创建的节点拥有最小序列号，则该节点获取到该锁，退出获取锁的算法过程；</span><br><span class="line">　　d. 否则就调用exists(“/locknode/znode具有相邻较小序列号, watch=true)，如果返回false则进入步骤b；</span><br><span class="line">　　e. 如果上面步骤返回true，则客户单安心等待释放锁的通知既可以；</span><br></pre></td></tr></table></figure></p>
+<p>　　释放锁的过程如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">　　a. 当持有锁的客户端直接删除相应的临时节点，这个删除操作也会让等待其释放所的其他某个客户端会收到notification；</span><br><span class="line">　　b. 那个收到通知的客户端应当在此时具有最小序列号的客户端，其得到通知的过程就应当是获取锁的过程。</span><br></pre></td></tr></table></figure></p>
+<h4 id="5-4-Leader-Election"><a href="#5-4-Leader-Election" class="headerlink" title="5.4. Leader Election"></a>5.4. Leader Election</h4><p>　　选主就是要求分布式系统中只有一个客户端进程作为组织、协调者的情况，这样可以简化多个客户端进程的同步、分配、管理等工作，选主操作的重要作用就是消除Leader带来的单点问题，能够在Leader挂掉的情况下快速选出新Leader继续服务。通常，选主操作必须满足的条件是在任何时候，至多只有一个Leader存在。<br></p>
+<p>　　在下面的选主操作中，会使用临时序列节点，我们同样假定具有最小序列号的临时节点代表的主机为Leader。最简单的方式就是当作为Leader最小序列号的节点消失后，所有节点收到通知并检查自己是否是最小节点，然后具有最小序列号的那个节点行驶Leader操作，这必然是惊群的实现。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">　　a. 创建/election持久节点作为所有待参选客户端根节点，参选的客户端创建临时序列节点/election/candidate-sessionID_路径，使用sessionID的识别码主要是用于帮助异常情况的名字识别，在创建临时顺序节点的时候可能create()已经成功但是server此时crash掉了，那么客户端就无法得到当前创建的名字，而此时client的会话仍然是有效的，此时客户端通过扫描sessionID可以得到相关节点，这里所涉及到的ZooKeeper的特性，是序列节点的序列号是基于目录递增的，而不是基于特定前缀递增的。下面假设create()调用成功后返回N序列号；</span><br><span class="line">　　b. 客户端可以获取当前参选者信息L = getChildren(“/election“, watch=false)，不设置watch event是为了防止竞选过程中出现惊群情况；</span><br><span class="line">　　c. 对/election/candidate-sessionID_M设置watch event，其中M是小于N相邻序列号L = getChildren(“/election/candidate-sessionID_M”, watch=true)；</span><br><span class="line">　　d. 当得到上面节点的删除notification的时候，调用getChildren(“/election/“, watch=false)获取所有的参选节点；</span><br><span class="line">　　e. 当得到最新的参选列表L时候，此时：如果本节点candidate-sessionID_N是L中的最小节点，则声明自己为Leader；否则像上面一样监听/election/candidate-sessionID_M，其中M是小于N相邻序列号；</span><br><span class="line">　　f. 如果当前的Leader已经crash掉，则拥有次最小序列号的客户端收到通知，通过上面的d步骤检查将会作为leader继任；</span><br><span class="line">　　可选的，Leader可以将自己的识别信息保留在固定节点上，这时候其他节点将可以方便的查询那个固定节点的信息，得知当前系统的Leader是谁了。</span><br></pre></td></tr></table></figure></p>
+<h4 id="5-5-Group-membership"><a href="#5-5-Group-membership" class="headerlink" title="5.5. Group membership"></a>5.5. Group membership</h4><p>　　群组管理功能是允许其他进程能够相互感知进程加入、退出集群的功能，以便得到当前集群的最新状态。在ZooKeeper中通过ephemeral临时节点的特性，任何客户端加入集群都可以在一个预设的路径作为父节点创建一个ephemeral临时节点，而通过在这个父节点上增加watch event就可以感知加入、离开集群的操作导致集群成员的变化。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">　　a. 创建/membership永久节点，任何客户端加入群组都需要在这个路径下创建ephemeral临时节点；</span><br><span class="line">　　b. 群组的所有成员注册/membership的watch event，通过调用L = getChildren(“/membership”, watch=true)方法，以感知群组成员的变化事件；</span><br><span class="line">　　c. 当有客户端加入群组的时候就会创建ephemeral临时节点，客户端离开或者crash等情况，ZooKeeper服务会自动删除其对应的临时节点，所有的其他成员将得到通知；</span><br><span class="line">　　d. 通过查看L，成员可以得知加入或者离开群组的成员；</span><br></pre></td></tr></table></figure></p>
+<p>　　当然，上面的实现会有herd effect惊群问题。</p>
+<h4 id="5-6-Two-Phase-commit"><a href="#5-6-Two-Phase-commit" class="headerlink" title="5.6. Two-Phase commit"></a>5.6. Two-Phase commit</h4><p>　　2PC是事务系统中最常见的一致性手段，用于保证某个事务在所有客户端都是原子性commit或rollback。2PC的两个阶段是：协调者询问所有参与者，让所有参与者投票是提交还是放弃某个事务；协调者收集所有选票，如果所有参与者都赞成commit那么就提交事务，否则就回滚事务，协调者最终将结果通知给所有参与者。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">　　a. 创建/2PC_Transactions代表2PC事务节点，协调者(可以通过之前的选主方式选出Leader作为协调者)在其下创建事务，然后在其上设置watch event；</span><br><span class="line">　　b. 协调者在事务节点下创建另外一个持久子节点/2PC_Transactions/TX/tx_result，用于发布commit、abort或者其他的协议相关信息；</span><br><span class="line">　　c. 所有的事件参与者都在/2PC_Transactions/和/2PC_Transactions/TX/tx_result下创建watch event；</span><br><span class="line">　　d. 当协调者创建事务节点的时候，所有的参与客户端都会收到notification，然后客户端针对事务信息发起自己的投票；投票的过程就是在/2PC_Transactions/TX下创建带有自己主机标示的ephemeral临时节点，并表明自己的投票立场；</span><br><span class="line">　　e. 协调者发现应当参与的所有参与者都建立了临时节点后，就清点各个客户端的选票，根据投票结果将最终的事务结果写入到tx_result节点中；</span><br><span class="line">　　f. 当tx_result节点更新的时候，所有的客户端都会收到NodeDataChanged事件通知，然后根据最终的决议结果发起提交还是回滚操作。</span><br></pre></td></tr></table></figure>
+<h4 id="5-7-Service-Discovery"><a href="#5-7-Service-Discovery" class="headerlink" title="5.7. Service Discovery"></a>5.7. Service Discovery</h4><p>　　服务发现是分布式系统的核心功能和SOA架构的核心构件，最简单的服务发现是可以让客户端发现服务提供者的IP:Port地址信息。服务发现的核心特性包括：其允许服务进行注册以表明自己的可用性；其通过某种方式可以定位到一个现存可用的服务；服务的变更可以通知传播出去。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">　　a. 约定/services是一个固定节点用于服务发布；</span><br><span class="line">　　b. 服务注册发布的过程中，服务会在/services下面注册一个ephemeral临时节点；</span><br><span class="line">　　c. 服务发现的过程，客户端加入集群后可以对某个服务的路径添加watch侦听，新服务实例的加入和退出都可以被通知到。</span><br></pre></td></tr></table></figure></p>
+<h2 id="6-如何使用zookeeper"><a href="#6-如何使用zookeeper" class="headerlink" title="6. 如何使用zookeeper"></a>6. 如何使用zookeeper</h2><p><strong>预备1: 首先在开始之前我们先讲一下zookeeper的client的用法。请看如下代码</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line">import org.apache.zookeeper.KeeperException;</span><br><span class="line">import org.apache.zookeeper.WatchedEvent;</span><br><span class="line">import org.apache.zookeeper.Watcher;</span><br><span class="line">import org.apache.zookeeper.ZooKeeper;</span><br><span class="line"></span><br><span class="line">import java.io.IOException;</span><br><span class="line">import java.util.concurrent.TimeUnit;</span><br><span class="line"></span><br><span class="line">//必须实现watcher，然后复写process方法</span><br><span class="line">public class TestExist implements Watcher&#123;</span><br><span class="line">    private  ZooKeeper zk;</span><br><span class="line"></span><br><span class="line">    public static void main(String[] args) &#123;</span><br><span class="line">        try &#123;</span><br><span class="line">        	//建一个watcher的对象</span><br><span class="line">            TestExist te = new TestExist();</span><br><span class="line">            //连接到zookeeper，需要注意最后一个参数watch</span><br><span class="line">            ZooKeeper zk = new ZooKeeper(&quot;localhost:2181&quot;, 3000, te);</span><br><span class="line">            te.zk = zk;</span><br><span class="line">            zk.exists(&quot;/my&quot;,true);</span><br><span class="line"></span><br><span class="line">            TimeUnit.SECONDS.sleep(1000000);</span><br><span class="line">        &#125; catch (IOException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125; catch (InterruptedException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125; catch (KeeperException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    //回调处理函数</span><br><span class="line">    @Override</span><br><span class="line">    public void process(WatchedEvent event) &#123;</span><br><span class="line">        System.out.println(&quot;=============Start&quot;);</span><br><span class="line">        System.out.println(event.getPath());</span><br><span class="line">        System.out.println(event.getState());</span><br><span class="line">        System.out.println(event.getType());</span><br><span class="line"></span><br><span class="line">        System.out.println(&quot;=============End&quot;);</span><br><span class="line">        System.out.println(&quot;\n&quot;);</span><br><span class="line">        try &#123;</span><br><span class="line">        	//注意一点，watcher只能回调一次</span><br><span class="line">            zk.exists(&quot;/my&quot;,true);</span><br><span class="line">        &#125; catch (KeeperException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125; catch (InterruptedException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre style="background-color: yellow;font-size: 30px;white-space: pre-wrap;
+word-wrap: break-word;border-radius: 5px">
+【注意】zookeeper所有的watcher只是监控一次，处理过后如有需要监控还需要再次调用exist或者其他相应的接口
+</pre>
+
+<p><strong>预备2: 临时节点</strong></p>
+<p>现场演示</p>
+<h4 id="6-1-分布式锁"><a href="#6-1-分布式锁" class="headerlink" title="6.1. 分布式锁"></a>6.1. 分布式锁</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">package org.mariadbCtrl;</span><br><span class="line"></span><br><span class="line">import org.apache.zookeeper.*;</span><br><span class="line"></span><br><span class="line">import java.util.Collections;</span><br><span class="line">import java.util.Comparator;</span><br><span class="line">import java.util.List;</span><br><span class="line">import java.util.concurrent.TimeUnit;</span><br><span class="line"></span><br><span class="line">public class DistributeLock implements Watcher &#123;</span><br><span class="line">    public ZooKeeper zk;</span><br><span class="line">    private String root;</span><br><span class="line">    private String path;</span><br><span class="line">    private String sequence;</span><br><span class="line">    private Object mutex;</span><br><span class="line">    private List&lt;String&gt; seqs;</span><br><span class="line"></span><br><span class="line">    public DistributeLock(ZooKeeper zk, String root, String path) &#123;</span><br><span class="line">        mutex = new Object();</span><br><span class="line">        this.root = root;</span><br><span class="line">        this.path = path;</span><br><span class="line">        this.zk = zk;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void sortSequence(List&lt;String&gt; seqs) &#123;</span><br><span class="line">        Collections.sort(seqs, new Comparator&lt;String&gt;() &#123;</span><br><span class="line">            public int compare(String a, String b) &#123;</span><br><span class="line">                return a.compareTo(b);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void lock() &#123;</span><br><span class="line">        try &#123;</span><br><span class="line">            sequence = zk.create(root + &apos;/&apos; + path, new byte[0], ZooDefs.Ids.OPEN_ACL_UNSAFE,</span><br><span class="line">                    CreateMode.EPHEMERAL_SEQUENTIAL);</span><br><span class="line">            sequence = sequence.split(&quot;/&quot;)[2];</span><br><span class="line">            System.out.println(&quot;Current Lock Sequence is &quot; + sequence);</span><br><span class="line"></span><br><span class="line">            int cIndex = getNodeIndex();</span><br><span class="line">            System.out.println(&quot;First get index : &quot;+ cIndex);</span><br><span class="line"></span><br><span class="line">            while (cIndex != 0) &#123;</span><br><span class="line">                System.out.println(&quot;Now I listen to : &quot;+ root + &quot;/&quot;  +seqs.get(cIndex - 1));</span><br><span class="line">                zk.exists(root + &quot;/&quot; + seqs.get(cIndex - 1), this);</span><br><span class="line">                synchronized (mutex) &#123;</span><br><span class="line">                    mutex.wait();</span><br><span class="line">                    cIndex = getNodeIndex();</span><br><span class="line">                    System.out.println(&quot;Loop get index : &quot;+ cIndex );</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            System.out.println(&quot;I get the lock!Now I am going to sleep&quot;);</span><br><span class="line">            TimeUnit.SECONDS.sleep(10000);</span><br><span class="line">        &#125; catch (KeeperException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125; catch (InterruptedException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public int getNodeIndex()&#123;</span><br><span class="line"></span><br><span class="line">        int index = 0;</span><br><span class="line">        try &#123;</span><br><span class="line">            seqs = zk.getChildren(root, false);</span><br><span class="line">            sortSequence(seqs);</span><br><span class="line">            index = seqs.indexOf(sequence);</span><br><span class="line">        &#125; catch (KeeperException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125; catch (InterruptedException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">        return index;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void unlock() &#123;</span><br><span class="line">        try &#123;</span><br><span class="line">            zk.delete(root + &quot;/&quot; + sequence, 0);</span><br><span class="line">        &#125; catch (InterruptedException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125; catch (KeeperException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public void process(WatchedEvent event) &#123;</span><br><span class="line">        if (event.getType() == Event.EventType.NodeDeleted) &#123;</span><br><span class="line">            System.out.println(&quot;Watcher Event Node [&quot; + sequence + &quot;] has been removed&quot;);</span><br><span class="line"></span><br><span class="line">            synchronized (mutex) &#123;</span><br><span class="line">                mutex.notify();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            System.out.println(&quot;Event type is &quot; + event.getType());</span><br><span class="line">            System.out.println(&quot;State type is &quot; + event.getState());</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="https://mswang66.github.io/2018/01/23/MariaDB Galera Cluster重启过程/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="longsheng.wang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="鸣晟古姬de博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2018/01/23/MariaDB Galera Cluster重启过程/" itemprop="url">
+                  mariadb集群重启过程
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-23T11:28:05+08:00">
+                2018-01-23
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="MariaDB-Galera-Cluster"><a href="#MariaDB-Galera-Cluster" class="headerlink" title="MariaDB Galera Cluster:"></a>MariaDB Galera Cluster:</h3><h5 id="Solution-1"><a href="#Solution-1" class="headerlink" title="Solution 1:"></a>Solution 1:</h5><p>1) I’ve changed safe_to_bootstrap parameter to 1 on one of the node in the file /var/lib/mysql/grastate.dat:</p>
+<p><code>safe_to_bootstrap: 1</code></p>
+<p>2) After that I killed all mysql processes:</p>
+<p><code>killall -KILL mysql mysqld_safe mysqld mysql-systemd</code></p>
+<p>3) And started a new cluster:</p>
+<p><code>galera_new_cluster</code></p>
+<p>4) All other nodes I reconnected to the new one:</p>
+<p><code>systemctl restart mariadb</code></p>
+<p>P.S. to install killall on CentOS use psmisc:</p>
+<p><code>sudo yum install psmisc</code></p>
+<h5 id="Solution-2"><a href="#Solution-2" class="headerlink" title="Solution 2:"></a>Solution 2:</h5><p>Another way to restart a MariaDB Galera Cluster is to use –wsrep-new-cluster parameter.</p>
+<p>1) Kill all mysql processes:</p>
+<p><code>killall -KILL mysql mysqld_safe mysqld mysql-systemd</code></p>
+<p>2) On the most up to date node start a new cluster:</p>
+<p><code>/etc/init.d/mysql start --wsrep-new-cluster</code></p>
+<p>3) Now other nodes can be connected:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">service mysql start --wsrep_cluster_address=&quot;gcomm://192.168.0.101,192.168.0.102,192.168.0.103&quot; \</span><br><span class="line">--wsrep_cluster_name=&quot;my_cluster&quot;</span><br></pre></td></tr></table></figure></p>
+<h3 id="Percona-XtraDB-Cluster"><a href="#Percona-XtraDB-Cluster" class="headerlink" title="Percona XtraDB Cluster:"></a>Percona XtraDB Cluster:</h3><h5 id="Solution-1-1"><a href="#Solution-1-1" class="headerlink" title="Solution 1:"></a>Solution 1:</h5><p>In case you can connect to the most up to date node then you can setup the node to bootstrap with the next SQL:</p>
+<p><code>SET GLOBAL wsrep_provider_options=&#39;pc.bootstrap=true&#39;;</code></p>
+<h5 id="Solution-2-1"><a href="#Solution-2-1" class="headerlink" title="Solution 2:"></a>Solution 2:</h5><p>In case if all your nodes are dead and can not be started, you can stop the old one cluster and run a new one. You must stop all the cluster nodes because they have an information about old nodes in the old cluster.</p>
+<p>1) Kill all the mysql processes on all nodes:</p>
+<p><code>killall -KILL mysql mysqld_safe mysqld mysql-systemd</code></p>
+<p>2) Start a new cluster on the most up to date node:</p>
+<p><code>systemctl start mysql@bootstrap.service</code></p>
+<p>3) Start other nodes:</p>
+<p><code>systemctl start mysql</code></p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="https://mswang66.github.io/2018/01/18/openstack的vnc卡顿解决办法/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -363,7 +868,7 @@
             <h1 id="openstack的vnc界面在chrome很卡的解决办法"><a href="#openstack的vnc界面在chrome很卡的解决办法" class="headerlink" title="openstack的vnc界面在chrome很卡的解决办法"></a>openstack的vnc界面在chrome很卡的解决办法</h1><h3 id="前言-其实一直都发现这个问题，之前懒得去理，需要用的时候用vnc-client就可以解决了。但是到客户那边需要演示，肯定需要用openstack界面去操作。这次修改也是因为现场演示的时候，chrome上的vnc直接卡死"><a href="#前言-其实一直都发现这个问题，之前懒得去理，需要用的时候用vnc-client就可以解决了。但是到客户那边需要演示，肯定需要用openstack界面去操作。这次修改也是因为现场演示的时候，chrome上的vnc直接卡死" class="headerlink" title="前言: 其实一直都发现这个问题，之前懒得去理，需要用的时候用vnc client就可以解决了。但是到客户那边需要演示，肯定需要用openstack界面去操作。这次修改也是因为现场演示的时候，chrome上的vnc直接卡死"></a>前言: 其实一直都发现这个问题，之前懒得去理，需要用的时候用vnc client就可以解决了。但是到客户那边需要演示，肯定需要用openstack界面去操作。这次修改也是因为现场演示的时候，chrome上的vnc直接卡死</h3><h3 id="解决办法："><a href="#解决办法：" class="headerlink" title="解决办法："></a>解决办法：</h3><h4 id="1-首先打开vnc的界面，通过console查看对应的js文件，来找出vnc的代码是哪个模块的代码"><a href="#1-首先打开vnc的界面，通过console查看对应的js文件，来找出vnc的代码是哪个模块的代码" class="headerlink" title="1. 首先打开vnc的界面，通过console查看对应的js文件，来找出vnc的代码是哪个模块的代码"></a>1. 首先打开vnc的界面，通过console查看对应的js文件，来找出vnc的代码是哪个模块的代码</h4><h4 id="2-找过nova代码和horizon代码，发现都没有，这就超出我的预料了，我预想中应该在这2个项目中的"><a href="#2-找过nova代码和horizon代码，发现都没有，这就超出我的预料了，我预想中应该在这2个项目中的" class="headerlink" title="2. 找过nova代码和horizon代码，发现都没有，这就超出我的预料了，我预想中应该在这2个项目中的"></a>2. 找过nova代码和horizon代码，发现都没有，这就超出我的预料了，我预想中应该在这2个项目中的</h4><h4 id="3-通过查看openstack的nova服务，发现-nova-novncproxy-服务存在，那肯定就在这个里面了，进去一开，果然"><a href="#3-通过查看openstack的nova服务，发现-nova-novncproxy-服务存在，那肯定就在这个里面了，进去一开，果然" class="headerlink" title="3. 通过查看openstack的nova服务，发现 nova-novncproxy 服务存在，那肯定就在这个里面了，进去一开，果然"></a>3. 通过查看openstack的nova服务，发现 nova-novncproxy 服务存在，那肯定就在这个里面了，进去一开，果然</h4><h4 id="4-查看openstack的安装教程-安装教程-发现，是用yum安装的openstack-nova-novncproxy"><a href="#4-查看openstack的安装教程-安装教程-发现，是用yum安装的openstack-nova-novncproxy" class="headerlink" title="4. 查看openstack的安装教程(安装教程)发现，是用yum安装的openstack-nova-novncproxy"></a>4. 查看openstack的安装教程(<a href="https://docs.openstack.org/nova/pike/install/controller-install-rdo.html" target="_blank" rel="noopener">安装教程</a>)发现，是用yum安装的openstack-nova-novncproxy</h4><h4 id="5-然后发现这块代码其实是-noVNC项目的代码。openstack用的noVNC的版本是0-5-1。-google一查，说是0-6-2可以解决这个问题。"><a href="#5-然后发现这块代码其实是-noVNC项目的代码。openstack用的noVNC的版本是0-5-1。-google一查，说是0-6-2可以解决这个问题。" class="headerlink" title="5. 然后发现这块代码其实是 noVNC项目的代码。openstack用的noVNC的版本是0.5.1。 google一查，说是0.6.2可以解决这个问题。"></a>5. 然后发现这块代码其实是 noVNC项目的代码。openstack用的noVNC的版本是0.5.1。 google一查，说是0.6.2可以解决这个问题。</h4><h4 id="6-然后下载对应的-0-6-2-下载地址-版本直接替换，然后重启-openstack-nova-novncproxy服务，发现OK"><a href="#6-然后下载对应的-0-6-2-下载地址-版本直接替换，然后重启-openstack-nova-novncproxy服务，发现OK" class="headerlink" title="6. 然后下载对应的 0.6.2 下载地址 版本直接替换，然后重启 openstack-nova-novncproxy服务，发现OK"></a>6. 然后下载对应的 <code>0.6.2</code> <a href="https://github.com/novnc/noVNC/releases" target="_blank" rel="noopener">下载地址</a> 版本直接替换，然后重启 openstack-nova-novncproxy服务，发现OK</h4><blockquote>
 <p>到这里问题就解决了，但是我们不能修改openstack的yum源，所以，我们需要自己制作一个novnc的rpm包</p>
 </blockquote>
-<h2 id="规范的安装方式"><a href="#规范的安装方式" class="headerlink" title="规范的安装方式"></a>规范的安装方式</h2><p>由于上述方法是手动替换noVNC的版本，这样太low了，不能作为安装的流程。So，我们需要做一个rpm包，然后替换原来的包。</p>
+<h1 id="规范的安装方式"><a href="#规范的安装方式" class="headerlink" title="规范的安装方式"></a>规范的安装方式</h1><p>由于上述方法是手动替换noVNC的版本，这样太low了，不能作为安装的流程。So，我们需要做一个rpm包，然后替换原来的包。</p>
 <h3 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h3><h4 id="1-首先呢，得学习rpmbuild的安装教程，看了半天！突然想到，我把yum源的rpm包下载下来不就完事了嘛，只要简单修改一下"><a href="#1-首先呢，得学习rpmbuild的安装教程，看了半天！突然想到，我把yum源的rpm包下载下来不就完事了嘛，只要简单修改一下" class="headerlink" title="1. 首先呢，得学习rpmbuild的安装教程，看了半天！突然想到，我把yum源的rpm包下载下来不就完事了嘛，只要简单修改一下"></a>1. 首先呢，得学习rpmbuild的安装教程，看了半天！突然想到，我把yum源的rpm包下载下来不就完事了嘛，只要简单修改一下</h4><h4 id="2-从openstack的yum源上找（openstack源Pike版本）-下载novnc-0-5-1-2-el7-noarch-rpm"><a href="#2-从openstack的yum源上找（openstack源Pike版本）-下载novnc-0-5-1-2-el7-noarch-rpm" class="headerlink" title="2. 从openstack的yum源上找（openstack源Pike版本）,下载novnc-0.5.1-2.el7.noarch.rpm"></a>2. 从openstack的yum源上找（<a href="http://mirror.centos.org/centos-7/7/cloud/x86_64/openstack-ocata/common/" target="_blank" rel="noopener">openstack源Pike版本</a>）,下载<code>novnc-0.5.1-2.el7.noarch.rpm</code></h4><h4 id="3-然后解压缩-rpm2cpio-novnc-0-5-1-2-el6-src-rpm-cpio-div-解压出来会有3个文件-novnc-0-4-manpage-patch-novnc-spec，-v0-5-1-tar-gz"><a href="#3-然后解压缩-rpm2cpio-novnc-0-5-1-2-el6-src-rpm-cpio-div-解压出来会有3个文件-novnc-0-4-manpage-patch-novnc-spec，-v0-5-1-tar-gz" class="headerlink" title="3. 然后解压缩 rpm2cpio novnc-0.5.1-2.el6.src.rpm |cpio -div, 解压出来会有3个文件 novnc-0.4-manpage.patch, novnc.spec， v0.5.1.tar.gz"></a>3. 然后解压缩 <code>rpm2cpio novnc-0.5.1-2.el6.src.rpm |cpio -div</code>, 解压出来会有3个文件 <code>novnc-0.4-manpage.patch</code>, <code>novnc.spec</code>， <code>v0.5.1.tar.gz</code></h4><h4 id="4-然后修改nova-spec-文件。-只需要修改Version为-0-6-2"><a href="#4-然后修改nova-spec-文件。-只需要修改Version为-0-6-2" class="headerlink" title="4. 然后修改nova.spec 文件。 只需要修改Version为 0.6.2,"></a>4. 然后修改nova.spec 文件。 只需要修改Version为 0.6.2,</h4><h4 id="5-然后开始build过程"><a href="#5-然后开始build过程" class="headerlink" title="5. 然后开始build过程"></a>5. 然后开始build过程</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">mkdir /root/rpmbuild</span><br><span class="line">cd /root/rpmbuild</span><br><span class="line"></span><br><span class="line">mkdir SOURCES SPECS BUILD RPMS SRPMS</span><br><span class="line">cd -</span><br><span class="line">cp nonvc.spec /root/rpmbuild/SPECS/</span><br><span class="line">cp novnc-0.4-manpage.patch  /root/rpmbuild/SOURCE/</span><br><span class="line">cp v0.6.2.tar.gz /root/rpmbuild/SOURCE/</span><br><span class="line">cd /root/rpmbuild/SPECS/</span><br><span class="line">rpmbuild  -bb novnc.spec</span><br></pre></td></tr></table></figure>
 <p>当然了，需要自己准备rpmbuild的安装环境<br><code>yum install gcc rpm-build pcre-devel</code></p>
 <h4 id="6-这个时候你在-root-rpmbuild-RPMS-noarch目录下就会发现最新的-novnc-0-6-2-2-el7-noarch-rpm"><a href="#6-这个时候你在-root-rpmbuild-RPMS-noarch目录下就会发现最新的-novnc-0-6-2-2-el7-noarch-rpm" class="headerlink" title="6. 这个时候你在/root/rpmbuild/RPMS/noarch目录下就会发现最新的 novnc-0.6.2-2.el7.noarch.rpm"></a>6. 这个时候你在/root/rpmbuild/RPMS/noarch目录下就会发现最新的 <code>novnc-0.6.2-2.el7.noarch.rpm</code></h4><h4 id="7-编完之后就是安装了，由于之前openstack环境已经安装了-0-5-1-版本-So我们需要的是update"><a href="#7-编完之后就是安装了，由于之前openstack环境已经安装了-0-5-1-版本-So我们需要的是update" class="headerlink" title="7. 编完之后就是安装了，由于之前openstack环境已经安装了 0.5.1 版本. So我们需要的是update"></a>7. 编完之后就是安装了，由于之前openstack环境已经安装了 <code>0.5.1</code> 版本. So我们需要的是update</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rpm -Uvh novnc-0.6.2-2.el7.noarch.rpm</span><br></pre></td></tr></table></figure>
@@ -431,7 +936,7 @@
               
                 
                 <a class="post-title-link" href="/2018/01/16/cloudview应对修改admin密码/" itemprop="url">
-                  未命名
+                  cloudview修改密码
                 </a>
               
             
@@ -490,6 +995,163 @@
 <h1 id="2-重启服务"><a href="#2-重启服务" class="headerlink" title="2. 重启服务"></a>2. 重启服务</h1><pre><code>docker stop middleware
 docker start middleware
 </code></pre>
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="https://mswang66.github.io/2018/01/12/kubernetes配置命令/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="longsheng.wang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="鸣晟古姬de博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2018/01/12/kubernetes配置命令/" itemprop="url">
+                  kubernetes部署使用到的命令合集
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-12T10:18:01+08:00">
+                2018-01-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>kubertest kubernetes kubernetes.default kubernetes.default.svc kubernetes.default.svc.cluster.local</p>
+<p>[10.96.0.1 192.168.200.142]</p>
+<p>proxy_on<br>export no_proxy=20.0.0.0/24,20.0.0.1,20.0.0.130/24,kubertest,kubernetes,kubernetes.default,kubernetes.default.svc,kubernetes.default.svc.cluster.local,localhost,127.0.0.0/8,10.0.0.0/24</p>
+<p>no_proxy=20.0.0.0/24,20.0.0.133,20.0.0.130/24,k8server,kubernetes,kubernetes.default,kubernetes.default.svc,kubernetes.default.svc.cluster.local,localhost,127.0.0.0/8,10.0.0.0/24,k8server,10.0.0.134,10.0.0.2,10.0.0.10,200.0.0.0/24</p>
+<p>swapoff -a</p>
+<p>sudo kubeadm init –pod-network-cidr=10.1.0.0/16 –service-cidr=10.3.3.0/24</p>
+<p>kubeadm init –pod-network-cidr=20.0.0.0/24 –service-cidr=10.0.0.0/24 –kubernetes-version v1.9.1</p>
+<p>–system-cgroups cgroupfs  –cgroup-root /</p>
+<p>curl -L <a href="https://raw.githubusercontent.com/projectcalico/canal/master/k8s-install/1.6/canal.yaml" target="_blank" rel="noopener">https://raw.githubusercontent.com/projectcalico/canal/master/k8s-install/1.6/canal.yaml</a> -o canal.yaml<br>sed -i “s@10.244.0.0/16@10.1.0.0/16@” canal.yaml<br>kubectl taint nodes –all=true  node-role.kubernetes.io/master:NoSchedule-</p>
+<hr>
+<p>/usr/bin/dockerd -H fd:// $DOCKER_OPTS</p>
+<p>/etc/docker/daemon.json<br>{<br>  “exec-opts”: [“native.cgroupdriver=systemd”]</p>
+<h2 id=""><a href="#" class="headerlink" title="}"></a>}</h2><p>kubeadm init \<br>  –kubernetes-version=v1.8.0 \<br>  –pod-network-cidr=20.0.0.0/24 \<br>  –apiserver-advertise-address=192.168.200.142</p>
+<p>Environment=”KUBELET_EXTRA_ARGS=–fail-swap-on=false”</p>
+<p>关闭了局域网里面的dhcp服务</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">IPADDR=20.0.0.133</span><br><span class="line">PREFIX=24</span><br><span class="line">BOOTPROTO=static</span><br></pre></td></tr></table></figure>
+<p>yum install vim</p>
+<p>systemctl disable firewalld<br>systemctl stop firewalld<br>setenforce 0</p>
+<p>sudo sed -i ‘s/10.96.0.10/10.0.0.134/g’ /etc/systemd/system/kubelet.service.d/10-kubeadm.conf</p>
+<p>kubeadm init –pod-network-cidr=20.0.0.0/24 –service-cidr=10.0.0.0/24   –bootstrap-auth-token</p>
+<h2 id="certificate-manager-go-314-Failed-while-requesting-a-signed-certificate-from-the-master-cannot-create-certificate-signing-request-Post"><a href="#certificate-manager-go-314-Failed-while-requesting-a-signed-certificate-from-the-master-cannot-create-certificate-signing-request-Post" class="headerlink" title="certificate_manager.go:314] Failed while requesting a signed certificate from the master: cannot create certificate signing request: Post"></a>certificate_manager.go:314] Failed while requesting a signed certificate from the master: cannot create certificate signing request: Post</h2><p>root@k8server ~]# kubeadm init<br>[init] Using Kubernetes version: v1.9.1<br>[init] Using Authorization modes: [Node RBAC]<br>[preflight] Running pre-flight checks.<br>    [WARNING Hostname]: hostname “k8server” could not be reached<br>    [WARNING Hostname]: hostname “k8server” lookup k8server on 8.8.8.8:53: no such host<br>    [WARNING FileExisting-crictl]: crictl not found in system path<br>[preflight] Starting the kubelet service<br>[certificates] Generated ca certificate and key.<br>[certificates] Generated apiserver certificate and key.<br>[certificates] apiserver serving cert is signed for DNS names [k8server kubernetes kubernetes.default kubernetes.default.svc kubernetes.default.svc.cluster.local] and IPs [10.96.0.1 10.0.0.134]<br>[certificates] Generated apiserver-kubelet-client certificate and key.<br>[certificates] Generated sa key and public key.<br>[certificates] Generated front-proxy-ca certificate and key.<br>[certificates] Generated front-proxy-client certificate and key.<br>[certificates] Valid certificates and keys now exist in “/etc/kubernetes/pki”<br>[kubeconfig] Wrote KubeConfig file to disk: “admin.conf”<br>[kubeconfig] Wrote KubeConfig file to disk: “kubelet.conf”<br>[kubeconfig] Wrote KubeConfig file to disk: “controller-manager.conf”<br>[kubeconfig] Wrote KubeConfig file to disk: “scheduler.conf”<br>[controlplane] Wrote Static Pod manifest for component kube-apiserver to “/etc/kubernetes/manifests/kube-apiserver.yaml”<br>[controlplane] Wrote Static Pod manifest for component kube-controller-manager to “/etc/kubernetes/manifests/kube-controller-manager.yaml”<br>[controlplane] Wrote Static Pod manifest for component kube-scheduler to “/etc/kubernetes/manifests/kube-scheduler.yaml”<br>[etcd] Wrote Static Pod manifest for a local etcd instance to “/etc/kubernetes/manifests/etcd.yaml”<br>[init] Waiting for the kubelet to boot up the control plane as Static Pods from directory “/etc/kubernetes/manifests”.<br>[init] This might take a minute or longer if the control plane images have to be pulled.<br>[apiclient] All control plane components are healthy after 29.003333 seconds<br>[uploadconfig] Storing the configuration used in ConfigMap “kubeadm-config” in the “kube-system” Namespace<br>[markmaster] Will mark node k8server as master by adding a label and a taint<br>[markmaster] Master k8server tainted and labelled with key/value: node-role.kubernetes.io/master=””<br>[bootstraptoken] Using token: e3c0bf.09aed4130878a8ca<br>[bootstraptoken] Configured RBAC rules to allow Node Bootstrap tokens to post CSRs in order for nodes to get long term certificate credentials<br>[bootstraptoken] Configured RBAC rules to allow the csrapprover controller automatically approve CSRs from a Node Bootstrap Token<br>[bootstraptoken] Configured RBAC rules to allow certificate rotation for all node client certificates in the cluster<br>[bootstraptoken] Creating the “cluster-info” ConfigMap in the “kube-public” namespace<br>[addons] Applied essential addon: kube-dns<br>[addons] Applied essential addon: kube-proxy</p>
+<p>Your Kubernetes master has initialized successfully!</p>
+<p>To start using your cluster, you need to run the following as a regular user:</p>
+<p>  mkdir -p $HOME/.kube<br>  sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config<br>  sudo chown $(id -u):$(id -g) $HOME/.kube/config</p>
+<p>You should now deploy a pod network to the cluster.<br>Run “kubectl apply -f [podnetwork].yaml” with one of the options listed at:<br>  <a href="https://kubernetes.io/docs/concepts/cluster-administration/addons/" target="_blank" rel="noopener">https://kubernetes.io/docs/concepts/cluster-administration/addons/</a></p>
+<p>You can now join any number of machines by running the following on each node<br>as root:</p>
+<p>  kubeadm join –token e3c0bf.09aed4130878a8ca 10.0.0.134:6443 –discovery-token-ca-cert-hash sha256:53a22e0803f564192dca5de4898fdadc7d9b9734fd43262bfab7d137fc848d02</p>
+<hr>
+<p>kubectl patch -f &lt;(cat &lt;&lt;EOF<br>apiVersion: rbac.authorization.k8s.io/v1alpha1<br>kind: ClusterRoleBinding<br>metadata:<br>  name: cluster-admin<br>roleRef:<br>  apiGroup: rbac.authorization.k8s.io<br>  kind: ClusterRole<br>  name: cluster-admin<br>subjects:</p>
+<ul>
+<li>kind: Group<br>name: system:masters</li>
+<li>kind: Group<br>name: system:authenticated</li>
+<li>kind: Group<br>name: system:unauthenticated<br>EOF<br>)</li>
+</ul>
+<p>可能遇到的问题：</p>
+<ol>
+<li>[preflight] Some fatal errors occurred:<br> /proc/sys/net/bridge/bridge-nf-call-iptables contents are not set to 1<br>解决方案：<pre><code>echo 1 &gt; /proc/sys/net/bridge/bridge-nf-call-iptables
+echo 1 &gt; /proc/sys/net/bridge/bridge-nf-call-ip6tables
+</code></pre></li>
+</ol>
+
           
         
       
@@ -610,6 +1272,125 @@ docker start middleware
 <h2 id="1-更新apt源"><a href="#1-更新apt源" class="headerlink" title="1. 更新apt源"></a>1. 更新apt源</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"># curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add</span><br><span class="line">OK</span><br><span class="line"></span><br><span class="line"># echo &quot;deb http://apt.kubernetes.io/ kubernetes-xenial main&quot; &gt; /etc/apt/sources.list.d/kubernetes.list</span><br><span class="line"></span><br><span class="line"># apt-get update</span><br></pre></td></tr></table></figure>
 <h2 id="2-安装docker"><a href="#2-安装docker" class="headerlink" title="2. 安装docker"></a>2. 安装docker</h2><p>手动安装方式： 打开 <a href="https://apt.dockerproject.org/repo/dists/ubuntu-xenial/main/filelist" target="_blank" rel="noopener">https://apt.dockerproject.org/repo/dists/ubuntu-xenial/main/filelist</a> 可以看到有docker的版本列表<br>下载需要的版本自行安装<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">/volumes/repos/apt/repo/pool/main/d/docker-engine/docker-engine_17.03.1~ce-0~ubuntu-xenial_amd64.deb</span><br><span class="line">/volumes/repos/apt/repo/pool/main/d/docker-engine/docker-engine_1.12.3-0~xenial_amd64.deb</span><br><span class="line">/volumes/repos/apt/repo/pool/main/d/docker-engine/docker-engine_17.03.0~ce-0~ubuntu-xenial_amd64.deb</span><br><span class="line">/volumes/repos/apt/repo/pool/main/d/docker-engine/docker-engine_1.12.0-0~xenial_amd64.deb</span><br><span class="line">/volumes/repos/apt/repo/pool/main/d/docker-engine/docker-engine_17.05.0~ce-0~ubuntu-xenial_armhf.deb</span><br><span class="line">/volumes/repos/apt/repo/pool/main/d/docker-engine/docker-engine_1.12.5-0~ubuntu-xenial_amd64.deb</span><br><span class="line">/volumes/repos/apt/repo/pool/main/d/docker-engine/docker-engine_1.13.1-0~ubuntu-xenial_armhf.deb</span><br><span class="line">/volumes/repos/apt/repo/pool/main/d/docker-engine/docker-engine_1.11.0-0~xenial_amd64.deb</span><br><span class="line">/volumes/repos/apt/repo/pool/main/d/docker-engine/docker-engine_1.11.1-0~xenial_amd64.deb</span><br><span class="line">/volumes/repos/apt/repo/pool/main/d/docker-engine/docker-engine_1.13.0-0~ubuntu-xenial_armhf.deb</span><br><span class="line">/volumes/repos/apt/repo/pool/main/d/docker-engine/docker-engine_1.12.2-0~xenial_amd64.deb</span><br><span class="line">/volumes/repos/apt/repo/pool/main/d/docker-engine/docker-engine_1.12.4-0~ubuntu-xenial_amd64.deb</span><br><span class="line">/volumes/repos/apt/repo/pool/main/d/docker-engine/docker-engine_17.05.0~ce-0~ubuntu-xenial_amd64.deb</span><br><span class="line">/volumes/repos/apt/repo/pool/main/d/docker-engine/docker-engine_1.12.6-0~ubuntu-xenial_amd64.deb</span><br><span class="line">/volumes/repos/apt/repo/pool/main/d/docker-engine/docker-engine_17.03.0~ce-0~ubuntu-xenial_armhf.deb</span><br><span class="line">/volumes/repos/apt/repo/pool/main/d/docker-engine/docker-engine_1.13.1-0~ubuntu-xenial_amd64.deb</span><br><span class="line">/volumes/repos/apt/repo/pool/main/d/docker-engine/docker-engine_1.11.2-0~xenial_amd64.deb</span><br><span class="line">/volumes/repos/apt/repo/pool/main/d/docker-engine/docker-engine_1.13.0-0~ubuntu-xenial_amd64.deb</span><br><span class="line">/volumes/repos/apt/repo/pool/main/d/docker-engine/docker-engine_17.04.0~ce-0~ubuntu-xenial_amd64.deb</span><br><span class="line">/volumes/repos/apt/repo/pool/main/d/docker-engine/docker-engine_1.12.1-0~xenial_amd64.deb</span><br><span class="line">/volumes/repos/apt/repo/pool/main/d/docker-engine/docker-engine_17.03.1~ce-0~ubuntu-xenial_armhf.deb</span><br><span class="line">/volumes/repos/apt/repo/pool/main/d/docker-engine/docker-engine_17.04.0~ce-0~ubuntu-xenial_armhf.deb</span><br></pre></td></tr></table></figure></p>
 <h2 id="3-安装kubernates基础组件"><a href="#3-安装kubernates基础组件" class="headerlink" title="3. 安装kubernates基础组件"></a>3. 安装kubernates基础组件</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">apt-get install -y kubelet kubeadm kubectl kubernetes-cni</span><br></pre></td></tr></table></figure>
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="https://mswang66.github.io/2018/01/11/Ubuntu 16.04 安装 kubernetes/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="longsheng.wang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="鸣晟古姬de博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2018/01/11/Ubuntu 16.04 安装 kubernetes/" itemprop="url">
+                  Ubuntu 16.04 安装 kubernetes
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-11T14:35:17+08:00">
+                2018-01-11
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="Ubuntu-16-04-安装-kubernetes"><a href="#Ubuntu-16-04-安装-kubernetes" class="headerlink" title="#Ubuntu 16.04 安装 kubernetes"></a>#Ubuntu 16.04 安装 kubernetes</h2><h2 id="1-更新apt源"><a href="#1-更新apt源" class="headerlink" title="1. 更新apt源"></a>1. 更新apt源</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"># curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add</span><br><span class="line">OK</span><br><span class="line"></span><br><span class="line"># echo &quot;deb http://apt.kubernetes.io/ kubernetes-xenial main&quot; &gt; /etc/apt/sources.list.d/kubernetes.list</span><br><span class="line"></span><br><span class="line"># apt-get update</span><br></pre></td></tr></table></figure>
+<h2 id="2-安装docker"><a href="#2-安装docker" class="headerlink" title="2. 安装docker"></a>2. 安装docker</h2><p>手动安装方式： 打开 <a href="https://apt.dockerproject.org/repo/dists/ubuntu-xenial/main/filelist" target="_blank" rel="noopener">https://apt.dockerproject.org/repo/dists/ubuntu-xenial/main/filelist</a> 可以看到有docker的版本列表<br>下载需要的版本自行安装<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">/volumes/repos/apt/repo/pool/main/d/docker-engine/docker-engine_17.03.1~ce-0~ubuntu-xenial_amd64.deb</span><br><span class="line">/volumes/repos/apt/repo/pool/main/d/docker-engine/docker-engine_1.12.3-0~xenial_amd64.deb</span><br><span class="line">/volumes/repos/apt/repo/pool/main/d/docker-engine/docker-engine_17.03.0~ce-0~ubuntu-xenial_amd64.deb</span><br><span class="line">/volumes/repos/apt/repo/pool/main/d/docker-engine/docker-engine_1.12.0-0~xenial_amd64.deb</span><br><span class="line">/volumes/repos/apt/repo/pool/main/d/docker-engine/docker-engine_17.05.0~ce-0~ubuntu-xenial_armhf.deb</span><br><span class="line">/volumes/repos/apt/repo/pool/main/d/docker-engine/docker-engine_1.12.5-0~ubuntu-xenial_amd64.deb</span><br><span class="line">/volumes/repos/apt/repo/pool/main/d/docker-engine/docker-engine_1.13.1-0~ubuntu-xenial_armhf.deb</span><br><span class="line">/volumes/repos/apt/repo/pool/main/d/docker-engine/docker-engine_1.11.0-0~xenial_amd64.deb</span><br><span class="line">/volumes/repos/apt/repo/pool/main/d/docker-engine/docker-engine_1.11.1-0~xenial_amd64.deb</span><br><span class="line">/volumes/repos/apt/repo/pool/main/d/docker-engine/docker-engine_1.13.0-0~ubuntu-xenial_armhf.deb</span><br><span class="line">/volumes/repos/apt/repo/pool/main/d/docker-engine/docker-engine_1.12.2-0~xenial_amd64.deb</span><br><span class="line">/volumes/repos/apt/repo/pool/main/d/docker-engine/docker-engine_1.12.4-0~ubuntu-xenial_amd64.deb</span><br><span class="line">/volumes/repos/apt/repo/pool/main/d/docker-engine/docker-engine_17.05.0~ce-0~ubuntu-xenial_amd64.deb</span><br><span class="line">/volumes/repos/apt/repo/pool/main/d/docker-engine/docker-engine_1.12.6-0~ubuntu-xenial_amd64.deb</span><br><span class="line">/volumes/repos/apt/repo/pool/main/d/docker-engine/docker-engine_17.03.0~ce-0~ubuntu-xenial_armhf.deb</span><br><span class="line">/volumes/repos/apt/repo/pool/main/d/docker-engine/docker-engine_1.13.1-0~ubuntu-xenial_amd64.deb</span><br><span class="line">/volumes/repos/apt/repo/pool/main/d/docker-engine/docker-engine_1.11.2-0~xenial_amd64.deb</span><br><span class="line">/volumes/repos/apt/repo/pool/main/d/docker-engine/docker-engine_1.13.0-0~ubuntu-xenial_amd64.deb</span><br><span class="line">/volumes/repos/apt/repo/pool/main/d/docker-engine/docker-engine_17.04.0~ce-0~ubuntu-xenial_amd64.deb</span><br><span class="line">/volumes/repos/apt/repo/pool/main/d/docker-engine/docker-engine_1.12.1-0~xenial_amd64.deb</span><br><span class="line">/volumes/repos/apt/repo/pool/main/d/docker-engine/docker-engine_17.03.1~ce-0~ubuntu-xenial_armhf.deb</span><br><span class="line">/volumes/repos/apt/repo/pool/main/d/docker-engine/docker-engine_17.04.0~ce-0~ubuntu-xenial_armhf.deb</span><br></pre></td></tr></table></figure></p>
+
           
         
       
@@ -801,7 +1582,7 @@ docker start middleware
               
                 
                 <a class="post-title-link" href="/2018/01/04/kubernetes环境搭建(MAC)/" itemprop="url">
-                  未命名
+                  mac部署kubernetes
                 </a>
               
             
@@ -891,421 +1672,13 @@ docker start middleware
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="https://mswang66.github.io/2018/01/03/ONOS-cord-相关概念/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="longsheng.wang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="鸣晟古姬de博客">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2018/01/03/ONOS-cord-相关概念/" itemprop="url">
-                  Onos cord 相关概念
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-03T14:35:48+08:00">
-                2018-01-03
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>学习onos cord的知识储备</p>
-<h1 id="Part1"><a href="#Part1" class="headerlink" title="Part1."></a>Part1.</h1><h3 id="1-OLT"><a href="#1-OLT" class="headerlink" title="1. OLT"></a>1. OLT</h3><p> Optional Line Terminal 光线路终端</p>
-<h3 id="2-ONF"><a href="#2-ONF" class="headerlink" title="2. ONF"></a>2. ONF</h3><p> Optional Network Terminal 光网络终端</p>
-<h3 id="3-ONU"><a href="#3-ONU" class="headerlink" title="3. ONU"></a>3. ONU</h3><p> Optional Network Unit 光网络单元</p>
-<h5 id="关系"><a href="#关系" class="headerlink" title="关系:"></a><strong>关系</strong>:</h5><p>局端设备（OLT）与多个用户端设备（ONU/ONT）之间通过无源的光缆、光分/合路器等组成的光分配网（ODN）连接的网络</p>
-<h5 id="区别"><a href="#区别" class="headerlink" title="区别:"></a><strong>区别</strong>:</h5><p>ONU和ONT都是用户端的设备，本质上没什么区别，但如果非得区分则可以从名称看出区别：ONT是光网络终端，应用于最终用户，而ONU是指光网络单元，它与最终用户之间可能还有其他网络</p>
-<h5 id="举例"><a href="#举例" class="headerlink" title="举例:"></a><strong>举例</strong>:</h5><p>比如在一个小区里面，ONT是直接放在用户家中的设备，而ONU可能就是放置在楼道中，各个用户通过交换机等设备连接至ONU。</p>
-<hr>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="https://mswang66.github.io/2017/12/26/zookeeper之client连接/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="longsheng.wang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="鸣晟古姬de博客">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/12/26/zookeeper之client连接/" itemprop="url">
-                  zookeeper之client连接
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-12-26T16:56:07+08:00">
-                2017-12-26
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="路径"><a href="#路径" class="headerlink" title="路径"></a>路径</h2><h3 id="相关文件"><a href="#相关文件" class="headerlink" title="相关文件"></a>相关文件</h3><h5 id="1-目录：-org-apache-zookeeper"><a href="#1-目录：-org-apache-zookeeper" class="headerlink" title="1. 目录： org.apache.zookeeper"></a>1. 目录： org.apache.zookeeper</h5><h5 id="2-文件列表"><a href="#2-文件列表" class="headerlink" title="2. 文件列表"></a>2. 文件列表</h5><ul>
-<li>ClientCnxn.java</li>
-<li>ClientCnxnSocket.java</li>
-<li>ClientCnxnSocketNIO.java</li>
-<li>ClientCnxnSocketNetty.java</li>
-<li>ClientWatchManager.java</li>
-<li>Zookeeper.java</li>
-</ul>
-<h2 id="建立连接"><a href="#建立连接" class="headerlink" title="建立连接"></a>建立连接</h2><h4 id="1-ZooKeeper-java"><a href="#1-ZooKeeper-java" class="headerlink" title="1. ZooKeeper.java"></a>1. ZooKeeper.java</h4><p>Method 名: Zookeeper()</p>
-<p>Method 功能：</p>
-<ul>
-<li>初始化 watch manager</li>
-<li>设置默认 watch manager</li>
-<li>解析 connect str</li>
-<li>提供集群主机列表</li>
-<li>初始化 <code>ClientCnxnSocket</code>对象(默认是 ClientCnxnSocketNIO)</li>
-<li>创建<code>ClientCnxn</code>对象(主要操作都是靠这个对象来操作)</li>
-<li>start <code>ClientCnxn</code>对象</li>
-</ul>
-<h4 id="2-ClientCnxn-java"><a href="#2-ClientCnxn-java" class="headerlink" title="2. ClientCnxn.java"></a>2. ClientCnxn.java</h4><h5 id="2-1-1-Method-名：ClientCnxn"><a href="#2-1-1-Method-名：ClientCnxn" class="headerlink" title="2.1.1. Method 名：ClientCnxn()"></a>2.1.1. Method 名：ClientCnxn()</h5><h5 id="2-1-2-Method-功能："><a href="#2-1-2-Method-功能：" class="headerlink" title="2.1.2. Method 功能："></a>2.1.2. Method 功能：</h5><ul>
-<li>设置对象的属性</li>
-<li>new一个<code>SendThread</code>对象</li>
-<li>new一个<code>EventThread</code>对象</li>
-</ul>
-<h5 id="2-2-1-Method-名-run"><a href="#2-2-1-Method-名-run" class="headerlink" title="2.2.1. Method 名: run()"></a>2.2.1. Method 名: run()</h5><h5 id="2-2-2-Method-功能："><a href="#2-2-2-Method-功能：" class="headerlink" title="2.2.2. Method 功能："></a>2.2.2. Method 功能：</h5><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;主要是开启一个while循环，用来接收server端发来的数据以及发送数据给server端</p>
-<ul>
-<li>设置clientCnxnSocket里面的一些queue等参数</li>
-<li>如果client状态是正常的，则开始while循环</li>
-<li>[<strong>while</strong>] 判断clientCnxnSocket连接是否OK。如果no，则建立连接</li>
-<li>[<strong>while</strong>]判断是否需要发送ping来保持连接</li>
-<li>[<strong>while</strong>]如果当前是只读模式，则去寻找可读写的Server</li>
-<li>[<strong>while</strong>]执行clientCnxnSocket的doTransport方法</li>
-</ul>
-<h4 id="3-ClientCnxnSocketNIO"><a href="#3-ClientCnxnSocketNIO" class="headerlink" title="3. ClientCnxnSocketNIO"></a>3. ClientCnxnSocketNIO</h4><h5 id="3-1-1-Method-名：-doTransport"><a href="#3-1-1-Method-名：-doTransport" class="headerlink" title="3.1.1. Method 名： doTransport()"></a>3.1.1. Method 名： doTransport()</h5><h5 id="3-1-2-Method-功能："><a href="#3-1-2-Method-功能：" class="headerlink" title="3.1.2. Method 功能："></a>3.1.2. Method 功能：</h5><p>主要调用 doIO 方法来执行接收发送操作</p>
-<ul>
-<li>接收数据，读packets到incomingBuffer</li>
-<li>发送数据.</li>
-</ul>
-<h2 id="发送-接收数据"><a href="#发送-接收数据" class="headerlink" title="发送/接收数据"></a>发送/接收数据</h2><blockquote>
-<p><strong>关键函数：doIO</strong></p>
-</blockquote>
-<h3 id="发送数据"><a href="#发送数据" class="headerlink" title="发送数据"></a>发送数据</h3><p>getChildren/exist/getData -&gt; cnxn.submitRequest -&gt; queuePacket -&gt; outgoingQueue.add - - - -&gt; doTransport -&gt; doIO -&gt; findSendablePacket -&gt; pendingQueue -&gt; pendingQueue.add()<br>备注：发送数据会有while循环判断packet是否finish<br>所以发送数据还需要参考<code>接收数据</code>的<code>处理返回值</code></p>
-<h3 id="接收数据"><a href="#接收数据" class="headerlink" title="接收数据"></a>接收数据</h3><h5 id="1-处理callback和watcher"><a href="#1-处理callback和watcher" class="headerlink" title="1. 处理callback和watcher"></a>1. 处理callback和watcher</h5><p>doTransport -&gt; doIO -&gt; sendThread.readResponse -&gt; eventThread.queue[Packets/Events] -&gt; Watcher.process /Callback.processResult</p>
-<h5 id="2-处理返回值"><a href="#2-处理返回值" class="headerlink" title="2. 处理返回值"></a>2. 处理返回值</h5><p>doTransport -&gt; doIO -&gt; sendThread.readResponse -&gt; ‘set packet.finish to true’ -&gt;   发送等待处返回结果</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="https://mswang66.github.io/2017/12/21/hello-world/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="longsheng.wang">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="鸣晟古姬de博客">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/12/21/hello-world/" itemprop="url">
-                  Hello World
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-12-21T11:12:21+08:00">
-                2017-12-21
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="noopener">Deployment</a></p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
+  <nav class="pagination">
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right"></i></a>
+  </nav>
+
 
           
           </div>
@@ -1348,7 +1721,7 @@ docker start middleware
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-count">13</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
